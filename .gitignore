@@ -11,6 +11,8 @@ local.properties
 .loadpath
 .recommenders
 target
+.idea
+*.iml
 
 # Eclipse Core
 .project
