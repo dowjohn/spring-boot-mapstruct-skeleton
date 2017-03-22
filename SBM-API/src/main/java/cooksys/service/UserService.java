@@ -99,6 +99,21 @@ public class UserService {
         User follower = userRepository.findByCredentialsUsername(username);
         if (leader != null && follower != null && !leader.getFollowers().contains(follower)) {
             leader.getFollowers().add(follower);
+            follower.getLeaders().add(leader);
+            userRepository.save(leader);
+            userRepository.saveAndFlush(follower);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean unfollowUser(String username, Credentials creds) {
+        User leader = userRepository.findByCredentialsUsername(creds.getUsername());
+        User follower = userRepository.findByCredentialsUsername(username);
+        if (leader != null && follower != null && leader.getFollowers().contains(follower)) {
+            follower.getLeaders().remove(leader);
+            leader.getFollowers().remove(follower);
+            userRepository.save(follower);
             userRepository.saveAndFlush(leader);
             return true;
         }

@@ -72,4 +72,15 @@ public class UserController {
             return false;
         }
     }
+
+    @RequestMapping(value = "{username}/unfollow", method = RequestMethod.PATCH)
+    public boolean unfollowUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
+        if (userService.unfollowUser(username.replace("@", ""), creds)) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return true;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return false;
+        }
+    }
 }
