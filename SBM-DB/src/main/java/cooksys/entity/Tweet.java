@@ -2,7 +2,7 @@ package cooksys.entity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 public class Tweet {
@@ -26,15 +26,15 @@ public class Tweet {
     @OneToOne(mappedBy = "inReplyTo")
     private Tweet original;
 
-//    @OneToMany(mappedBy = "reposted")
-//    private Tweet repostOf;
-//
-//    @ManyToOne
-//    private Set<Tweet> reposted;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    private Tweet parent;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "parent")
+    private List<Tweet> reposts;
 
     @ManyToMany(mappedBy = "tweetsWithHashtag")
-    private Set<Hashtag> hashtags;
+    private List<Hashtag> hashtags;
 
-    @ManyToMany(mappedBy = "mentionedIn")
-    private Set<User> mentions;
+    @ManyToMany
+    private List<User> mentions;
 }

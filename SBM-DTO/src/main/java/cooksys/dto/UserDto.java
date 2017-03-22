@@ -5,17 +5,13 @@ import cooksys.entity.Profile;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Set;
 
 public class UserDto {
     private Long id;
 
-    private String username;
-
     private boolean isActive;
-
-    private Timestamp timestamp;
 
     private Profile profile;
 
@@ -29,27 +25,27 @@ public class UserDto {
 
     private User leader;
 
-    public UserDto(){}
-
-    // new user
-    public UserDto(String username, boolean isActive, Profile profile, Credentials credentials) {
-        this.username = username;
-        this.isActive = isActive;
-        this.profile = profile;
-        this.credentials = credentials;
+    public Long getId() {
+        return id;
     }
 
-    //from db
-    public UserDto(Long id, String username, boolean isActive, Timestamp timestamp, Profile profile, Credentials credentials, Set<Tweet> usersTweets, Set<Tweet> mentionedIn, Set<User> following, User leader) {
+    public void setId(Long id) {
         this.id = id;
-        this.username = username;
-        this.isActive = isActive;
-        this.timestamp = timestamp;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public Credentials getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
-        this.usersTweets = usersTweets;
-        this.mentionedIn = mentionedIn;
-        this.following = following;
-        this.leader = leader;
     }
 }

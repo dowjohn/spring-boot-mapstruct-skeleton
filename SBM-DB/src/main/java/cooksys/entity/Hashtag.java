@@ -1,10 +1,7 @@
 package cooksys.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Hashtag {
@@ -12,8 +9,9 @@ public class Hashtag {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private String label;
 
     @ManyToMany
-    private Set<Tweet> tweetsWithHashtag;
+    private List<Tweet> tweetsWithHashtag;
 }
