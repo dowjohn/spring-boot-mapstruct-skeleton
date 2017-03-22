@@ -1,5 +1,8 @@
 package cooksys.entity;
 
+import org.hibernate.annotations.Persister;
+import org.springframework.data.annotation.Persistent;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -15,6 +18,12 @@ public class User {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+
+//    @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    public Date timestamp;
+
 
     @Column(name="created_at", nullable=false)
     @Temporal(TemporalType.TIMESTAMP)

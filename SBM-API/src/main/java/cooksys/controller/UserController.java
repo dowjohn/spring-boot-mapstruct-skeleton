@@ -1,11 +1,12 @@
 package cooksys.controller;
 
-import cooksys.dto.UserDto;
+import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
-import cooksys.entity.User;
+import cooksys.entity.Credentials;
 import cooksys.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +18,9 @@ import java.util.List;
 @RequestMapping("users")
 @Api(tags = {"public", "users"})
 public class UserController {
-    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllUsers")
@@ -29,17 +28,48 @@ public class UserController {
         return userService.index();
     }
 
-    @GetMapping("{id}")
-    @ApiOperation(value = "", nickname = "getUser")
-    public UserDtoOutput get(@PathVariable Long id) {
-        return userService.get(id);
+    @GetMapping("{username}")
+    @ApiOperation(value = "", nickname = "getUserByName")
+    public UserDtoOutput getUserByName(@RequestParam(value="username") String username, HttpServletResponse response) {
+        UserDtoOutput output = userService.getUserByName(username.replace("@", ""));
+        if (output != null) {
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+        return null;
     }
 
     @PostMapping
     @ApiOperation(value = "", nickname = "createUser")
-    public Long post(@RequestBody @Validated UserDto userDto, HttpServletResponse httpResponse) {
-        Long id = userService.post(userDto);
+    public UserDtoOutput post(@RequestBody UserDtoCreate userDtoCreate, HttpServletResponse httpResponse) {
+        UserDtoOutput output = userService.post(userDtoCreate);
         httpResponse.setStatus(HttpServletResponse.SC_CREATED);
-        return id;
+        return output;
+    }
+
+
+    @PatchMapping("{username}")
+    @ApiOperation(value = "", nickname = "updateUser")
+    public UserDtoOutput patch(@PathVariable String username, @RequestBody UserDtoCreate userDto, HttpServletResponse httpResponse) {
+        return userService.patch(username.replace("@", ""), userDto);
+    }
+
+    // really a patch tho
+    @DeleteMapping("{username}")
+    @ApiOperation(value = "", nickname = "deactivateUser")
+    public UserDtoOutput delete(@PathVariable String username, HttpServletResponse httpResponse) {
+        return userService.deactivate(username.replace("@", ""));
+    }
+
+    @RequestMapping(value = "{username}/follow", method = RequestMethod.PATCH)
+    public boolean followUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
+        if (userService.followUser(username.replace("@", ""), creds)) {
+            response.setStatus(HttpServletResponse.SC_CREATED);
+            return true;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            return false;
+        }
     }
 }

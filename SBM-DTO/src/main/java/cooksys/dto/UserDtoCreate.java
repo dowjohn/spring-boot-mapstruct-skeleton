@@ -5,10 +5,9 @@ import cooksys.entity.Profile;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
 
-import java.util.Date;
 import java.util.Set;
 
-public class UserDto {
+public class UserDtoCreate {
     private Long id;
 
     private boolean isActive;

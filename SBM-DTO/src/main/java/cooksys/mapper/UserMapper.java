@@ -1,11 +1,9 @@
 package cooksys.mapper;
 
-import cooksys.dto.UserDto;
+import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
 import cooksys.entity.User;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring"
 //        ,
@@ -16,14 +14,15 @@ public interface UserMapper {
 //            @Mapping(target="credentials", ignore=true),
             @Mapping(target="timestamp", ignore=true)
     })
-    User toUser(UserDto userDto);
+    User toUser(UserDtoCreate userDtoCreate);
 
 
     @Mappings({
             @Mapping(target="credentials", ignore=true),
 //            @Mapping(target="", ignore=true)
     })
-    UserDto toUserDto(User user);
+    UserDtoCreate toUserDto(User user);
+
 
     @Mappings({
             @Mapping(source = "credentials.username",target="username"),
