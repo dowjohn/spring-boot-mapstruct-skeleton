@@ -37,14 +37,15 @@ public class TweetService {
         User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoSimpleInput.getCredentials().getUsername());
 
         if (userPostingTweet != null && userPostingTweet.getCredentials().getPassword().equals(tweetDtoSimpleInput.getCredentials().getPassword())) {
+
+            // saving tweet TODO alter mapper to do this save logic.
             Tweet tweet = tweetMapper.toTweet(tweetDtoSimpleInput);
             tweet.setContent(tweetDtoSimpleInput.getContent());
             tweet.setAuthor(userPostingTweet);
             Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
             Tweet tweety = tweetRepository.findOne(tweetId);
 
-
-
+            //Saving mentions
             List<User> gottenUsers = new ArrayList<>();
             for (String aUsername : parseUsers(tweety.getContent())) {
                 User found = userRepository.findByCredentialsUsername(aUsername);
@@ -55,7 +56,11 @@ public class TweetService {
             tweety.setMentions(gottenUsers);
             Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
             TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
+
+            // Saving hashtags
             Set<Hashtag> saved = saveHashtags(tweety);
+
+            // Saving tweets hashtags to tweet (relation) TODO alter to use set in entity and these nested methods.
             Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
             List<Hashtag> dumbyList = new ArrayList<>();
             dumbyList.addAll(saved);
