@@ -1,5 +1,6 @@
 package cooksys.service;
 
+import com.google.common.collect.Lists;
 import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
@@ -8,11 +9,13 @@ import cooksys.entity.Tweet;
 import cooksys.entity.User;
 import cooksys.mapper.TweetMapper;
 import cooksys.mapper.UserMapper;
+import cooksys.repository.TweetRepository;
 import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    TweetRepository tweetRepository;
 
     @Autowired
     private TweetMapper tweetMapper;
@@ -134,10 +140,51 @@ public class UserService {
         for (User leader : user.getLeaders()) {
             outputTweets.addAll(leader.getUsersTweets());
         }
-        return outputTweets.stream()
+        return Lists
+                .reverse(outputTweets.stream()
                 .filter(x -> x.isAlive() == true)
+                .map(tweetMapper::toTweetDtoOutput)
+                .sorted(Comparator.comparing(TweetDtoOutput::getPosted))
+                .collect(Collectors.toList()));
+    }
+
+    public List<TweetDtoOutput> getUsersTweets(String username) {
+        User user = userRepository.findByCredentialsUsername(username);
+        List<Tweet> usersTweets = user.getUsersTweets();
+        return Lists
+                .reverse(usersTweets.stream()
+                .filter(x -> x.isAlive())
+                .map(tweetMapper::toTweetDtoOutput)
+                .sorted(Comparator.comparing(TweetDtoOutput::getPosted))
+                .collect(Collectors.toList()));
+    }
+
+
+    public List<TweetDtoOutput> getMentionedInTweets(String username) {
+        return userRepository
+                .findByCredentialsUsername(username)
+                .getMentionedIn()
+                .stream()
+                .filter(x -> x.isAlive())
                 .map(tweetMapper::toTweetDtoOutput)
                 .collect(Collectors.toList());
     }
 
+    public List<UserDtoOutput> getUsersFollowers(String username) {
+        return userRepository
+                .findByCredentialsUsername(username)
+                .getFollowers()
+                .stream()
+                .map(userMapper::toUserDtoOutput)
+                .collect(Collectors.toList());
+    }
+
+    public List<UserDtoOutput> getUsersLeaders(String username) {
+        return userRepository
+                .findByCredentialsUsername(username)
+                .getLeaders()
+                .stream()
+                .map(userMapper::toUserDtoOutput)
+                .collect(Collectors.toList());
+    }
 }

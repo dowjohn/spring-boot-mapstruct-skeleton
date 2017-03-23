@@ -96,6 +96,53 @@ public class UserController {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
+    }
 
+    @RequestMapping(value = "{username}/tweets", method = RequestMethod.GET)
+    public List<TweetDtoOutput> usersTweets(@PathVariable String username, HttpServletResponse response) {
+        List<TweetDtoOutput> output = userService.getUsersTweets(username.replace("@", ""));
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_FOUND);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "{username}/mentions", method = RequestMethod.GET)
+    public List<TweetDtoOutput> getMentionedInTweets(@PathVariable String username, HttpServletResponse response) {
+        List<TweetDtoOutput> output = userService.getMentionedInTweets(username.replace("@", ""));
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_FOUND);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "{username}/followers", method = RequestMethod.GET)
+    public List<UserDtoOutput> getUsersFollowers(@PathVariable String username, HttpServletResponse response) {
+        List<UserDtoOutput> output = userService.getUsersFollowers(username.replace("@", ""));
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_FOUND);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "{username}/following", method = RequestMethod.GET)
+    public List<UserDtoOutput> getUsersLeaders(@PathVariable String username, HttpServletResponse response) {
+        List<UserDtoOutput> output = userService.getUsersLeaders(username.replace("@", ""));
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_FOUND);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 }
