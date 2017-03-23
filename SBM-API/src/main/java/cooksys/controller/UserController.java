@@ -1,5 +1,6 @@
 package cooksys.controller;
 
+import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
 import cooksys.entity.Credentials;
@@ -82,5 +83,19 @@ public class UserController {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             return false;
         }
+    }
+
+    //returns list of tweets of followed users in reverse chronological order (newest first)
+    @RequestMapping(value = "{username}/feed", method = RequestMethod.PATCH)
+    public List<TweetDtoOutput> feedOfTweets(@PathVariable String username, HttpServletResponse response) {
+        List<TweetDtoOutput> output = userService.getFeed(username.replace("@", ""));
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_FOUND);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+
     }
 }

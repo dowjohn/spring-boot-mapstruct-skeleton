@@ -1,25 +1,32 @@
 package cooksys.service;
 
+import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
 import cooksys.entity.Credentials;
+import cooksys.entity.Tweet;
 import cooksys.entity.User;
+import cooksys.mapper.TweetMapper;
 import cooksys.mapper.UserMapper;
 import cooksys.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
+    @Autowired
     private UserMapper userMapper;
+
+    @Autowired
     private UserRepository userRepository;
 
-    public UserService(UserMapper userMapper, UserRepository userRepository) {
-        this.userMapper = userMapper;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private TweetMapper tweetMapper;
 
     public List<UserDtoOutput> index() {
         return userRepository
@@ -38,7 +45,6 @@ public class UserService {
         Long idOf = userRepository.saveAndFlush(userMapper.toUser(userDtoCreate)).getId();
         // TODO Timestamp is returning null;
         return userMapper.toUserDtoOutput(userRepository.findOne(idOf));
-
     }
 
     public boolean userAvailable(String substring) {
@@ -118,6 +124,17 @@ public class UserService {
             return true;
         }
         return false;
+    }
+
+    public List<TweetDtoOutput> getFeed(String username) {
+        User user = userRepository.findByCredentialsUsername(username);
+        List<Tweet> usersTweets = user.getUsersTweets();
+        List<Tweet> outputTweets = new ArrayList<>();
+        outputTweets.addAll(usersTweets);
+        for (User leader : user.getLeaders()) {
+            outputTweets.addAll(leader.getUsersTweets());
+        }
+        return outputTweets.stream().map(tweetMapper::toTweetDtoOutput).collect(Collectors.toList());
     }
 
 //    public static void copyNonNullProperties(Object src, Object target) {

@@ -1,7 +1,7 @@
 package cooksys.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,9 +14,16 @@ public class Tweet {
     @ManyToOne
     private User author;
 
-    private boolean isAlive;
+    private boolean isAlive = true;
 
-    private Timestamp postDate;
+    @Column(name="post_date", nullable=false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date posted;
+
+    @PrePersist
+    protected void onCreate() {
+        posted = new Date();
+    }
 
     private String content;
 
@@ -62,12 +69,12 @@ public class Tweet {
         isAlive = alive;
     }
 
-    public Timestamp getPostDate() {
-        return postDate;
+    public Date getPosted() {
+        return posted;
     }
 
-    public void setPostDate(Timestamp postDate) {
-        this.postDate = postDate;
+    public void setPosted(Date postDate) {
+        this.posted = posted;
     }
 
     public String getContent() {

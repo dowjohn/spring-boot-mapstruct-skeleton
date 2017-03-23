@@ -5,10 +5,7 @@ import cooksys.dto.UserDtoOutput;
 import cooksys.entity.User;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring"
-//        ,
-//        uses = {ReferenceMapper.class, CredentialsMapper.class}
-        )
+@Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mappings({
 //            @Mapping(target="credentials", ignore=true),

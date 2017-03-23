@@ -14,4 +14,32 @@ public class Hashtag {
 
     @ManyToMany
     private List<Tweet> tweetsWithHashtag;
+
+    public Hashtag(String label) {
+        this.label = label;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public List<Tweet> getTweetsWithHashtag() {
+        return tweetsWithHashtag;
+    }
+
+    public void setTweetsWithHashtag(List<Tweet> tweetsWithHashtag) {
+        this.tweetsWithHashtag = tweetsWithHashtag;
+    }
 }
