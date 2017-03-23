@@ -35,8 +35,13 @@ public class TweetController {
     @ApiOperation(value = "", nickname = "createSimpleTweet")
     public TweetDtoOutput post(@RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
         TweetDtoOutput output = tweetService.post(tweetDtoSimpleInput);
-        httpResponse.setStatus(HttpServletResponse.SC_CREATED);
-        return output;
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_CREATED);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
 

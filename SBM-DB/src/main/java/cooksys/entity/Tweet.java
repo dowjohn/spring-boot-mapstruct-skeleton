@@ -39,7 +39,7 @@ public class Tweet {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "parent")
     private List<Tweet> reposts;
 
-    @ManyToMany(mappedBy = "tweetsWithHashtag")
+    @ManyToMany
     private List<Hashtag> hashtags;
 
     @ManyToMany

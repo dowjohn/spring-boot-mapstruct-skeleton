@@ -12,10 +12,7 @@ import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -43,37 +40,53 @@ public class TweetService {
             Tweet tweet = tweetMapper.toTweet(tweetDtoSimpleInput);
             tweet.setContent(tweetDtoSimpleInput.getContent());
             tweet.setAuthor(userPostingTweet);
-            Long tweetId = tweetRepository.save(tweet).getId();
-            System.out.println(tweet.getId());
-//            Tweet tweety = tweetRepository.findOne(tweetId);
+            Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
+            Tweet tweety = tweetRepository.findOne(tweetId);
 
-//            saveHashtags(tweety);
-//
-//            List<User> gottenUsers = new ArrayList<>();
-//            for (String aUsername : parseUsers(tweety.getContent())) {
-//                User found = userRepository.findByCredentialsUsername(aUsername);
-//                if (found != null) {
-//                    gottenUsers.add(userRepository.findOne(found.getId()));
-//                }
-//            }
-//            tweety.setMentions(gottenUsers);
-//            tweetRepository.saveAndFlush(tweety);
-            TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweetRepository.findOne(tweetId));
+
+
+            List<User> gottenUsers = new ArrayList<>();
+            for (String aUsername : parseUsers(tweety.getContent())) {
+                User found = userRepository.findByCredentialsUsername(aUsername);
+                if (found != null) {
+                    gottenUsers.add(userRepository.findOne(found.getId()));
+                }
+            }
+            tweety.setMentions(gottenUsers);
+            Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
+            TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
+            Set<Hashtag> saved = saveHashtags(tweety);
+            Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
+            List<Hashtag> dumbyList = new ArrayList<>();
+            dumbyList.addAll(saved);
+            bestTweetEver.setHashtags(dumbyList);
+            tweetRepository.saveAndFlush(bestTweetEver);
             return out;
         }
         return null;
     }
 
-    public void saveHashtags(Tweet tweet) {
-        Set<String> hashtagsInString = parseHashtags(tweet.getContent());
+    // TODO offload to hashtagService
+    public Set<Hashtag> saveHashtags(Tweet tweet) {
+        Set<String> hashtagStrings = parseHashtags(tweet.getContent());
         Set<Hashtag> hashtags = new HashSet<>();
-        for (String hashtagString : hashtagsInString) {
-            hashtags.add(new Hashtag(hashtagString));
+        for (String hashtag : hashtagStrings) {
+            hashtags.add(new Hashtag(hashtag));
         }
         hashtagRepository.save(hashtags);
         hashtagRepository.flush();
+
+        Set<Hashtag> gottenHashs = new HashSet<>();
+        for (String aUsername : hashtagStrings) {
+            Hashtag found = hashtagRepository.findByLabel(aUsername);
+            if (found != null) {
+                gottenHashs.add(hashtagRepository.findOne(found.getId()));
+            }
+        }
+        return gottenHashs;
     }
 
+    // TODO offload to userService
     public Set<String> parseUsers(String content){
         Set<String> names = new HashSet<>();
         String[] words = content.split(" ");

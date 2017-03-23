@@ -12,7 +12,7 @@ public class Hashtag {
     @Column(nullable = false, unique = true)
     private String label;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "hashtags")
     private List<Tweet> tweetsWithHashtag;
 
     public Hashtag(String label) {
