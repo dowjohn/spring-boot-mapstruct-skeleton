@@ -126,6 +126,7 @@ public class TweetService {
         return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(id));
     }
 
+    // TODO better error catching
     public TweetDtoOutput deactivate(Long id, Credentials credentials) {
         if (userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword()) != null) {
             Tweet tweet = tweetRepository.findOne(id);
@@ -136,6 +137,7 @@ public class TweetService {
         return null;
     }
 
+    // TODO better error catching than returning null
     public boolean likeTweet(Long id, Credentials credentials) {
         User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
         Tweet tweet = tweetRepository.findOne(id);

@@ -1,5 +1,6 @@
 package cooksys.controller;
 
+import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.TweetDtoSimpleInput;
 import cooksys.entity.Credentials;
@@ -57,8 +58,46 @@ public class TweetController {
         return tweetService.deactivate(id, credentials);
     }
 
-    @RequestMapping(value = "/{id}/like", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/{id}/reply", method = RequestMethod.POST)
+    public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
+        return tweetService.reply(id, tweetDtoSimpleInput);
+    }
+
+
+    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
+    public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.repostTweet(id, credentials);
+    }
+
+
+    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
+    public List<HashtagDtoOutput> tags(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getTags(id);
+    }
+
+
+    @RequestMapping(value = "/{id}/likes", method = RequestMethod.PATCH)
+    public boolean likesOfTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.likeTweet(id, credentials);
+    }
+
+
+    @RequestMapping(value = "/{id}/context", method = RequestMethod.PATCH)
+    public boolean context(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.likeTweet(id, credentials);
+    }
+
+
+    @RequestMapping(value = "/{id}/replies", method = RequestMethod.PATCH)
     public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
         return tweetService.likeTweet(id, credentials);
     }
+
+
+    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.PATCH)
+    public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.likeTweet(id, credentials);
+    }
+
+
 }
