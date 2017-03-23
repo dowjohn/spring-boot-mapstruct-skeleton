@@ -2,6 +2,7 @@ package cooksys.service;
 
 import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.TweetDtoSimpleInput;
+import cooksys.entity.Credentials;
 import cooksys.entity.Hashtag;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
@@ -29,7 +30,7 @@ public class TweetService {
     private HashtagRepository hashtagRepository;
 
     public List<TweetDtoOutput> getAll() {
-        return tweetRepository.findAll().stream().map(tweetMapper::toTweetDtoOutput).collect(Collectors.toList());
+        return tweetRepository.findAll().stream().filter(x -> x.isAlive()).map(tweetMapper::toTweetDtoOutput).collect(Collectors.toList());
     }
 
     public TweetDtoOutput post(TweetDtoSimpleInput tweetDtoSimpleInput) {
@@ -71,7 +72,7 @@ public class TweetService {
         return null;
     }
 
-    // TODO offload to hashtagService
+    // TODO offload to hashtagService or some utility class
     public Set<Hashtag> saveHashtags(Tweet tweet) {
         Set<String> hashtagStrings = parseHashtags(tweet.getContent());
         Set<Hashtag> hashtagsToSave = new HashSet<>();
@@ -108,6 +109,7 @@ public class TweetService {
         return names;
     }
 
+    // TODO offload to hashtagService
     public Set<String> parseHashtags(String content) {
         Set<String> hashtags = new HashSet<>();
         String[] words = content.split(" ");
@@ -117,5 +119,33 @@ public class TweetService {
             }
         }
         return hashtags;
+    }
+
+    // TODO null check if repository cant find tweet of Long id
+    public TweetDtoOutput getTweet(Long id) {
+        return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(id));
+    }
+
+    public TweetDtoOutput deactivate(Long id, Credentials credentials) {
+        if (userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword()) != null) {
+            Tweet tweet = tweetRepository.findOne(id);
+            tweet.setAlive(false);
+            tweetRepository.saveAndFlush(tweet);
+            return tweetMapper.toTweetDtoOutput(tweet);
+        }
+        return null;
+    }
+
+    public boolean likeTweet(Long id, Credentials credentials) {
+        User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
+        Tweet tweet = tweetRepository.findOne(id);
+        if (user != null && tweet != null) {
+//            user.getLikedTweets().add(tweet);
+//            userRepository.saveAndFlush(user);
+            tweet.getLikedIt().add(user);
+            tweetRepository.saveAndFlush(tweet);
+            return true;
+        }
+        return false;
     }
 }

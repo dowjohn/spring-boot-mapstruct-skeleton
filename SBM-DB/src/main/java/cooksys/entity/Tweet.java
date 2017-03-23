@@ -45,6 +45,9 @@ public class Tweet {
     @ManyToMany
     private List<User> mentions;
 
+    @ManyToMany
+    private List<User> likedIt;
+
     public Long getId() {
         return id;
     }
@@ -131,5 +134,13 @@ public class Tweet {
 
     public void setMentions(List<User> mentions) {
         this.mentions = mentions;
+    }
+
+    public List<User> getLikedIt() {
+        return likedIt;
+    }
+
+    public void setLikedIt(List<User> likedIt) {
+        this.likedIt = likedIt;
     }
 }

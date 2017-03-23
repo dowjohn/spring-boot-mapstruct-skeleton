@@ -2,6 +2,7 @@ package cooksys.controller;
 
 import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.TweetDtoSimpleInput;
+import cooksys.entity.Credentials;
 import cooksys.entity.Tweet;
 import cooksys.service.TweetService;
 import io.swagger.annotations.Api;
@@ -30,6 +31,11 @@ public class TweetController {
         return tweetService.getAll();
     }
 
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public TweetDtoOutput getTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getTweet(id);
+    }
+
 
     @PostMapping
     @ApiOperation(value = "", nickname = "createSimpleTweet")
@@ -44,5 +50,15 @@ public class TweetController {
         }
     }
 
+    // really a patch tho
+    @DeleteMapping("{id}")
+    @ApiOperation(value = "", nickname = "deactivateTweet")
+    public TweetDtoOutput delete(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.deactivate(id, credentials);
+    }
 
+    @RequestMapping(value = "/{id}/like", method = RequestMethod.PATCH)
+    public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.likeTweet(id, credentials);
+    }
 }

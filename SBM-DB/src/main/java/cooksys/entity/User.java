@@ -50,6 +50,9 @@ public class User {
     @ManyToMany(mappedBy = "leaders")
     private List<User> followers;
 
+    @ManyToMany(mappedBy = "likedIt")
+    private List<Tweet> likedTweets;
+
     public Long getId() {
         return id;
     }
@@ -120,6 +123,14 @@ public class User {
 
     public void setFollowers(List<User> followers) {
         this.followers = followers;
+    }
+
+    public List<Tweet> getLikedTweets() {
+        return likedTweets;
+    }
+
+    public void setLikedTweets(List<Tweet> likedTweets) {
+        this.likedTweets = likedTweets;
     }
 
     @Override
