@@ -74,13 +74,18 @@ public class TweetService {
     // TODO offload to hashtagService
     public Set<Hashtag> saveHashtags(Tweet tweet) {
         Set<String> hashtagStrings = parseHashtags(tweet.getContent());
-        Set<Hashtag> hashtags = new HashSet<>();
+        Set<Hashtag> hashtagsToSave = new HashSet<>();
+        List<String> allHashtags = hashtagRepository.findAll().stream().map(x -> x.getLabel()).collect(Collectors.toList());
         for (String hashtag : hashtagStrings) {
-            hashtags.add(new Hashtag(hashtag));
+            if (!allHashtags.contains(hashtag)) {
+                hashtagsToSave.add(new Hashtag(hashtag));
+            }
         }
-        hashtagRepository.save(hashtags);
+        hashtagRepository.save(hashtagsToSave);
         hashtagRepository.flush();
 
+
+        // TODO offload
         Set<Hashtag> gottenHashs = new HashSet<>();
         for (String aUsername : hashtagStrings) {
             Hashtag found = hashtagRepository.findByLabel(aUsername);
