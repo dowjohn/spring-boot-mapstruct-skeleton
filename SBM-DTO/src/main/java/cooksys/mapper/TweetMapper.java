@@ -18,8 +18,8 @@ public interface TweetMapper {
             @Mapping(source = "author.id", target = "author"),
             @Mapping(source = "posted", target = "posted"),
             @Mapping(source = "content", target = "content"),
-            @Mapping(source = "inReplyTo.id", target = "inReplyTo"),
-            @Mapping(source = "parent.id", target = "repostOf")
+            @Mapping(source = "originalTweetReply.id", target = "replyTo"),
+            @Mapping(source = "parentTweetRepost.id", target = "repostOf")
     })
     TweetDtoOutput toTweetDtoOutput(Tweet tweet);
 

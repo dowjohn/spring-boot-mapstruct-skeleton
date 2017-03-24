@@ -58,46 +58,52 @@ public class TweetController {
         return tweetService.deactivate(id, credentials);
     }
 
+
+    @RequestMapping(value = "/{id}/like", method = RequestMethod.PATCH)
+    public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+        return tweetService.likeTweet(id, credentials);
+    }
+
     @RequestMapping(value = "/{id}/reply", method = RequestMethod.POST)
     public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
-        return tweetService.reply(id, tweetDtoSimpleInput);
+        return tweetService.replyToTweet(id, tweetDtoSimpleInput);
     }
-
-
-    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
-    public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.repostTweet(id, credentials);
-    }
-
-
-    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
-    public List<HashtagDtoOutput> tags(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getTags(id);
-    }
-
-
-    @RequestMapping(value = "/{id}/likes", method = RequestMethod.PATCH)
-    public boolean likesOfTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.likeTweet(id, credentials);
-    }
-
-
-    @RequestMapping(value = "/{id}/context", method = RequestMethod.PATCH)
-    public boolean context(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.likeTweet(id, credentials);
-    }
-
-
-    @RequestMapping(value = "/{id}/replies", method = RequestMethod.PATCH)
-    public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.likeTweet(id, credentials);
-    }
-
-
-    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.PATCH)
-    public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.likeTweet(id, credentials);
-    }
+//
+//
+//    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
+//    public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+//        return tweetService.repostTweet(id, credentials);
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
+//    public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
+//        return tweetService.getTags(id);
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}/likes", method = RequestMethod.PATCH)
+//    public boolean getLikes(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+//        return tweetService.getLikes(id, credentials);
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}/context", method = RequestMethod.PATCH)
+//    public boolean context(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+//        return tweetService.getContextTweets(id, credentials);
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}/replies", method = RequestMethod.PATCH)
+//    public boolean getReplies(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+//        return tweetService.getReplies(id, credentials);
+//    }
+//
+//
+//    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.PATCH)
+//    public boolean getReposts(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
+//        return tweetService.getReposts(id, credentials);
+//    }
 
 
 }

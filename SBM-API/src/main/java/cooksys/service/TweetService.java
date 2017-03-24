@@ -150,4 +150,50 @@ public class TweetService {
         }
         return false;
     }
+
+    public TweetDtoOutput replyToTweet(Long id, TweetDtoSimpleInput tweetDtoSimpleInput) {
+        User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoSimpleInput.getCredentials().getUsername());
+
+        if (userPostingTweet != null && userPostingTweet.getCredentials().getPassword().equals(tweetDtoSimpleInput.getCredentials().getPassword())) {
+
+            // saving tweet TODO alter mapper to do this save logic.
+            Tweet tweet = tweetMapper.toTweet(tweetDtoSimpleInput);
+            tweet.setContent(tweetDtoSimpleInput.getContent());
+            tweet.setAuthor(userPostingTweet);
+
+            //-----------------------------------------reply logic
+
+            Tweet repliedTo = tweetRepository.findOne(id);
+            tweet.setOriginalTweetReply(repliedTo);
+//            tweetRepository.save(repliedTo);
+            //-----------------------------------------
+            Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
+//            tweetRepository.save(repliedTo);
+            Tweet tweety = tweetRepository.findOne(tweetId);
+
+            //Saving mentions
+            List<User> gottenUsers = new ArrayList<>();
+            for (String aUsername : parseUsers(tweety.getContent())) {
+                User found = userRepository.findByCredentialsUsername(aUsername);
+                if (found != null) {
+                    gottenUsers.add(userRepository.findOne(found.getId()));
+                }
+            }
+            tweety.setMentions(gottenUsers);
+            Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
+            TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
+
+            // Saving hashtags
+            Set<Hashtag> saved = saveHashtags(tweety);
+
+            // Saving tweets hashtags to tweet (relation) TODO alter to use set in entity and these nested methods.
+            Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
+            List<Hashtag> dumbyList = new ArrayList<>();
+            dumbyList.addAll(saved);
+            bestTweetEver.setHashtags(dumbyList);
+            tweetRepository.saveAndFlush(bestTweetEver);
+            return out;
+        }
+        return null;
+    }
 }

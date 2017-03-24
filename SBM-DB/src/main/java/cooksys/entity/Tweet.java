@@ -27,16 +27,16 @@ public class Tweet {
 
     private String content;
 
-    @OneToOne
-    private Tweet inReplyTo;
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    private Tweet originalTweetReply;
 
-    @OneToOne(mappedBy = "inReplyTo")
-    private Tweet original;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "originalTweetReply")
+    private List<Tweet> replies;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    private Tweet parent;
+    private Tweet parentTweetRepost;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "parent")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "parentTweetRepost")
     private List<Tweet> reposts;
 
     @ManyToMany
@@ -76,7 +76,7 @@ public class Tweet {
         return posted;
     }
 
-    public void setPosted(Date postDate) {
+    public void setPosted(Date posted) {
         this.posted = posted;
     }
 
@@ -88,28 +88,28 @@ public class Tweet {
         this.content = content;
     }
 
-    public Tweet getInReplyTo() {
-        return inReplyTo;
+    public Tweet getOriginalTweetReply() {
+        return originalTweetReply;
     }
 
-    public void setInReplyTo(Tweet inReplyTo) {
-        this.inReplyTo = inReplyTo;
+    public void setOriginalTweetReply(Tweet originalTweetReply) {
+        this.originalTweetReply = originalTweetReply;
     }
 
-    public Tweet getOriginal() {
-        return original;
+    public List<Tweet> getReplies() {
+        return replies;
     }
 
-    public void setOriginal(Tweet original) {
-        this.original = original;
+    public void setReplies(List<Tweet> replies) {
+        this.replies = replies;
     }
 
-    public Tweet getParent() {
-        return parent;
+    public Tweet getParentTweetRepost() {
+        return parentTweetRepost;
     }
 
-    public void setParent(Tweet parent) {
-        this.parent = parent;
+    public void setParentTweetRepost(Tweet parentTweetRepost) {
+        this.parentTweetRepost = parentTweetRepost;
     }
 
     public List<Tweet> getReposts() {
