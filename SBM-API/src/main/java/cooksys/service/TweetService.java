@@ -155,6 +155,7 @@ public class TweetService {
         return false;
     }
 
+    // TODO add error catching
     public TweetDtoOutput replyToTweet(Long id, TweetDtoSimpleInput tweetDtoSimpleInput) {
         User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoSimpleInput.getCredentials().getUsername());
 
@@ -201,6 +202,7 @@ public class TweetService {
         return null;
     }
 
+    // TODO add error catching
     public TweetDtoOutput repostTweet(Long id, TweetDtoRepost tweetDtoRepost) {
         User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoRepost.getCredentials().getUsername());
 
@@ -245,10 +247,12 @@ public class TweetService {
         return null;
     }
 
+    // TODO add error catching
     public List<HashtagDtoOutput> getTags(Long id) {
         return tweetRepository.findOne(id).getHashtags().stream().map(hashtagMapper::toHashtagDtoOutput).collect(Collectors.toList());
     }
 
+    // TODO add error catching. check if original tweet is alive
     public List<UserDtoOutput> getLikes(Long id) {
         return tweetRepository
                 .getOne(id)
@@ -258,4 +262,56 @@ public class TweetService {
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }
+
+    // TODO add error handling and null catch check if orignal tweet is alive
+    public List<TweetDtoOutput> getReplyTweets(Long id) {
+        return tweetRepository
+                .getOne(id)
+                .getReplies()
+                .stream()
+                .filter(Tweet::isAlive)
+                .map(tweetMapper::toTweetDtoOutput)
+                .collect(Collectors.toList());
+    }
+
+    // TODO add error handling and null catch, check if original tweet is alive
+    public List<TweetDtoOutput> getRepostsOfTweet(Long id) {
+        return tweetRepository
+                .getOne(id)
+                .getReposts()
+                .stream()
+                .filter(Tweet::isAlive)
+                .map(tweetMapper::toTweetDtoOutput)
+                .collect(Collectors.toList());
+    }
+
+    // TODO test to see if working
+    public List<UserDtoOutput> getMentionedUsers(Long id) {
+        Tweet tweet =  tweetRepository.getOne(id);
+        if (tweet.isAlive()) {
+            return tweet.getMentions()
+                    .stream()
+                    .filter(x -> x.isActive())
+                    .map(userMapper::toUserDtoOutput)
+                    .collect(Collectors.toList());
+        }
+        return null;
+    }
+
+//    public List<TweetDtoOutput> getContextTweets(Long id) {
+//        Tweet tweet = tweetRepository.findOne(id);
+//        Set<Tweet> =
+//        return null;
+//    }
+//    private Set<Tweet> getParent(Tweet tweet) {
+//        Set<Tweet> tweets = new HashSet<>();
+//        if (tweet.getParentTweetRepost() == null) {
+//            return tweets;
+//        } else {
+//            Tweet tweety = tweet.getParentTweetRepost();
+//            tweets.add(tweety);
+//            tweets.addAll(getParent(tweety));
+//        }
+//    }
+
 }

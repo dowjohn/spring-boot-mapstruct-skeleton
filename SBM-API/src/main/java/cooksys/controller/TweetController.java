@@ -83,23 +83,23 @@ public class TweetController {
         return tweetService.getLikes(id);
     }
 
-//
-//    @RequestMapping(value = "/{id}/context", method = RequestMethod.PATCH)
-//    public boolean context(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-//        return tweetService.getContextTweets(id, credentials);
-//    }
-//
-//
-//    @RequestMapping(value = "/{id}/replies", method = RequestMethod.PATCH)
-//    public boolean getReplies(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-//        return tweetService.getReplies(id, credentials);
-//    }
-//
-//
-//    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.PATCH)
-//    public boolean getReposts(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-//        return tweetService.getReposts(id, credentials);
-//    }
+    @RequestMapping(value = "/{id}/replies", method = RequestMethod.GET)
+    public List<TweetDtoOutput> getReplyTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getReplyTweets(id);
+    }
 
+    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.GET)
+    public List<TweetDtoOutput> getRepostsOfTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getRepostsOfTweet(id);
+    }
 
+    @RequestMapping(value = "/{id}/mentions", method = RequestMethod.GET)
+    public List<UserDtoOutput> getMentionedUsers(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getMentionedUsers(id);
+    }
+
+//    @RequestMapping(value = "/{id}/context", method = RequestMethod.GET)
+//    public List<TweetDtoOutput> getContextTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
+//        return tweetService.getContextTweets(id);
+//    }
 }
