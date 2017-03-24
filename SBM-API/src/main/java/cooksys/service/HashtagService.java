@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 public class HashtagService {
 
     @Autowired
-    HashtagRepository hashtagRepository;
+    private HashtagRepository hashtagRepository;
 
     @Autowired
-    HashtagMapper hashtagMapper;
+    private HashtagMapper hashtagMapper;
 
     @Autowired
-    TweetMapper tweetMapper;
+    private TweetMapper tweetMapper;
 
     // TODO currently returning milliseconds instead of datetime, this is true for all timestamps currently
     public List<HashtagDtoOutput> getAll() {

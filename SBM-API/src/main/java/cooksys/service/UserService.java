@@ -9,12 +9,10 @@ import cooksys.entity.Tweet;
 import cooksys.entity.User;
 import cooksys.mapper.TweetMapper;
 import cooksys.mapper.UserMapper;
-import cooksys.repository.TweetRepository;
 import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +25,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    TweetRepository tweetRepository;
 
     @Autowired
     private TweetMapper tweetMapper;
@@ -114,46 +109,43 @@ public class UserService {
     }
 
     public List<TweetDtoOutput> getFeed(String username) {
-        User user = userRepository.findByCredentialsUsername(username);
-        List<Tweet> usersTweets = user.getUsersTweets();
-        List<Tweet> outputTweets = new ArrayList<>();
-        outputTweets.addAll(usersTweets);
+        User user = userRepository.findByCredentialsUsernameAndIsActiveTrue(username);
+        List<Tweet> outputTweets = user.getUsersTweets();
         for (User leader : user.getLeaders()) {
             outputTweets.addAll(leader.getUsersTweets());
         }
-        return Lists
-                .reverse(outputTweets.stream()
-                .filter(x -> x.isAlive() == true)
+        return Lists.reverse(outputTweets
+                .stream()
+                .filter(Tweet::isAlive)
                 .map(tweetMapper::toTweetDtoOutput)
                 .sorted(Comparator.comparing(TweetDtoOutput::getPosted))
                 .collect(Collectors.toList()));
     }
 
     public List<TweetDtoOutput> getUsersTweets(String username) {
-        User user = userRepository.findByCredentialsUsername(username);
+        User user = userRepository.findByCredentialsUsernameAndIsActiveTrue(username);
         List<Tweet> usersTweets = user.getUsersTweets();
-        return Lists
-                .reverse(usersTweets.stream()
-                .filter(x -> x.isAlive())
+        return Lists.reverse(usersTweets
+                .stream()
+                .filter(Tweet::isAlive)
                 .map(tweetMapper::toTweetDtoOutput)
                 .sorted(Comparator.comparing(TweetDtoOutput::getPosted))
                 .collect(Collectors.toList()));
     }
 
-
     public List<TweetDtoOutput> getMentionedInTweets(String username) {
         return userRepository
-                .findByCredentialsUsername(username)
+                .findByCredentialsUsernameAndIsActiveTrue(username)
                 .getMentionedIn()
                 .stream()
-                .filter(x -> x.isAlive())
+                .filter(Tweet::isAlive)
                 .map(tweetMapper::toTweetDtoOutput)
                 .collect(Collectors.toList());
     }
 
     public List<UserDtoOutput> getUsersFollowers(String username) {
         return userRepository
-                .findByCredentialsUsername(username)
+                .findByCredentialsUsernameAndIsActiveTrue(username)
                 .getFollowers()
                 .stream()
                 .filter(User::isActive)
@@ -163,7 +155,7 @@ public class UserService {
 
     public List<UserDtoOutput> getUsersLeaders(String username) {
         return userRepository
-                .findByCredentialsUsername(username)
+                .findByCredentialsUsernameAndIsActiveTrue(username)
                 .getLeaders()
                 .stream()
                 .filter(User::isActive)

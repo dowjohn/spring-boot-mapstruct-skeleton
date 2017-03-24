@@ -2,20 +2,15 @@ package cooksys.controller;
 
 import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
-import cooksys.entity.Hashtag;
 import cooksys.service.HashtagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- * Created by student-2 on 3/21/2017.
- */
 @RestController
 @RequestMapping("tags")
 @Api(tags = {"public", "hashtags"})
