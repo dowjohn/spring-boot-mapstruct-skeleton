@@ -54,21 +54,6 @@ public class UserService {
         return userMapper.toUserDtoOutput(userRepository.findOne(idOf));
     }
 
-    public boolean userAvailable(String substring) {
-        if (userRepository.findByCredentialsUsername(substring) != null) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean userExists(String substring) {
-        User usable = userRepository.findByCredentialsUsername(substring);
-        if (usable != null && usable.isActive()) {
-            return true;
-        }
-        return false;
-    }
-
     public UserDtoOutput getUserByName(String username) {
         return userMapper.toUserDtoOutput(userRepository.findByCredentialsUsername(username));
     }

@@ -2,7 +2,6 @@ package cooksys.service;
 
 import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
-import cooksys.entity.Hashtag;
 import cooksys.entity.Tweet;
 import cooksys.mapper.HashtagMapper;
 import cooksys.mapper.TweetMapper;
@@ -24,16 +23,6 @@ public class HashtagService {
 
     @Autowired
     TweetMapper tweetMapper;
-
-    public boolean tagExists(String substring) {
-        if (hashtagRepository.findByLabel(substring) != null) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
 
     // TODO currently returning milliseconds instead of datetime, this is true for all timestamps currently
     public List<HashtagDtoOutput> getAll() {
