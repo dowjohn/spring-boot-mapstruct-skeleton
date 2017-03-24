@@ -1,9 +1,6 @@
 package cooksys.controller;
 
-import cooksys.dto.HashtagDtoOutput;
-import cooksys.dto.TweetDtoOutput;
-import cooksys.dto.TweetDtoRepost;
-import cooksys.dto.TweetDtoSimpleInput;
+import cooksys.dto.*;
 import cooksys.entity.Credentials;
 import cooksys.entity.Tweet;
 import cooksys.service.TweetService;
@@ -80,13 +77,12 @@ public class TweetController {
     public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
         return tweetService.getTags(id);
     }
-//
-//
-//    @RequestMapping(value = "/{id}/likes", method = RequestMethod.PATCH)
-//    public boolean getLikes(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-//        return tweetService.getLikes(id, credentials);
-//    }
-//
+
+    @RequestMapping(value = "/{id}/likes", method = RequestMethod.GET)
+    public List<UserDtoOutput> getLikes(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getLikes(id);
+    }
+
 //
 //    @RequestMapping(value = "/{id}/context", method = RequestMethod.PATCH)
 //    public boolean context(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {

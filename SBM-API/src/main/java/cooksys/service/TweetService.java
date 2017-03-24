@@ -1,15 +1,13 @@
 package cooksys.service;
 
-import cooksys.dto.HashtagDtoOutput;
-import cooksys.dto.TweetDtoOutput;
-import cooksys.dto.TweetDtoRepost;
-import cooksys.dto.TweetDtoSimpleInput;
+import cooksys.dto.*;
 import cooksys.entity.Credentials;
 import cooksys.entity.Hashtag;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
 import cooksys.mapper.HashtagMapper;
 import cooksys.mapper.TweetMapper;
+import cooksys.mapper.UserMapper;
 import cooksys.repository.HashtagRepository;
 import cooksys.repository.TweetRepository;
 import cooksys.repository.UserRepository;
@@ -29,6 +27,8 @@ public class TweetService {
     private TweetMapper tweetMapper;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
     @Autowired
     private HashtagRepository hashtagRepository;
     @Autowired
@@ -70,9 +70,6 @@ public class TweetService {
             Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
             List<Hashtag> dumbyList = new ArrayList<>();
             dumbyList.addAll(saved);
-            for (Hashtag hash : dumbyList) {
-                System.out.println(hash.getLabel());
-            }
             bestTweetEver.setHashtags(dumbyList);
             tweetRepository.saveAndFlush(bestTweetEver);
             return out;
@@ -250,5 +247,15 @@ public class TweetService {
 
     public List<HashtagDtoOutput> getTags(Long id) {
         return tweetRepository.findOne(id).getHashtags().stream().map(hashtagMapper::toHashtagDtoOutput).collect(Collectors.toList());
+    }
+
+    public List<UserDtoOutput> getLikes(Long id) {
+        return tweetRepository
+                .getOne(id)
+                .getLikedIt()
+                .stream()
+                .filter(x -> x.isActive())
+                .map(userMapper::toUserDtoOutput)
+                .collect(Collectors.toList());
     }
 }
