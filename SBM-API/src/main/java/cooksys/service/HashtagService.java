@@ -3,6 +3,7 @@ package cooksys.service;
 import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
 import cooksys.entity.Hashtag;
+import cooksys.entity.Tweet;
 import cooksys.mapper.HashtagMapper;
 import cooksys.mapper.TweetMapper;
 import cooksys.repository.HashtagRepository;
@@ -49,6 +50,7 @@ public class HashtagService {
                 .findByLabel(label)
                 .getTweetsWithHashtag()
                 .stream()
+                .filter(Tweet::isAlive)
                 .map(tweetMapper::toTweetDtoOutput)
                 .collect(Collectors.toList());
     }

@@ -102,15 +102,19 @@ public class UserService {
 
     public UserDtoOutput deactivate(String username) {
         User user = userRepository.findByCredentialsUsername(username);
-        user.setActive(false);
-        userRepository.save(user);
-        return userMapper.toUserDtoOutput(user);
+        if (user != null) {
+            user.setActive(false);
+            userRepository.save(user);
+            return userMapper.toUserDtoOutput(user);
+        } else {
+            return null;
+        }
     }
 
     public boolean followUser(String username, Credentials creds) {
         User leader = userRepository.findByCredentialsUsername(creds.getUsername());
         User follower = userRepository.findByCredentialsUsername(username);
-        if (leader != null && follower != null && !leader.getFollowers().contains(follower)) {
+        if (leader != null && leader.isActive() == true && follower != null && !leader.getFollowers().contains(follower)) {
             leader.getFollowers().add(follower);
             follower.getLeaders().add(leader);
             userRepository.save(leader);
@@ -123,7 +127,7 @@ public class UserService {
     public boolean unfollowUser(String username, Credentials creds) {
         User leader = userRepository.findByCredentialsUsername(creds.getUsername());
         User follower = userRepository.findByCredentialsUsername(username);
-        if (leader != null && follower != null && leader.getFollowers().contains(follower)) {
+        if (leader != null && leader.isActive() == true && follower != null && leader.getFollowers().contains(follower)) {
             follower.getLeaders().remove(leader);
             leader.getFollowers().remove(follower);
             userRepository.save(follower);
@@ -176,6 +180,7 @@ public class UserService {
                 .findByCredentialsUsername(username)
                 .getFollowers()
                 .stream()
+                .filter(User::isActive)
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }
@@ -185,6 +190,7 @@ public class UserService {
                 .findByCredentialsUsername(username)
                 .getLeaders()
                 .stream()
+                .filter(User::isActive)
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }

@@ -16,7 +16,6 @@ import java.util.List;
  * Created by student-2 on 3/21/2017.
  */
 @RestController
-@Validated
 @RequestMapping("tweets")
 @Api(tags = {"public", "tweets"})
 public class TweetController {
@@ -31,7 +30,14 @@ public class TweetController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public TweetDtoOutput getTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getTweet(id);
+        TweetDtoOutput output = tweetService.getTweet(id);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
 
@@ -52,49 +58,112 @@ public class TweetController {
     @DeleteMapping("{id}")
     @ApiOperation(value = "", nickname = "deactivateTweet")
     public TweetDtoOutput delete(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.deactivate(id, credentials);
-    }
+        TweetDtoOutput output = tweetService.deactivate(id, credentials);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
 
+    }
 
     @RequestMapping(value = "/{id}/like", method = RequestMethod.PATCH)
     public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-        return tweetService.likeTweet(id, credentials);
+        boolean good = tweetService.likeTweet(id, credentials);
+        if (good) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return good;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return good;
+        }
     }
 
     @RequestMapping(value = "/{id}/reply", method = RequestMethod.POST)
     public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
-        return tweetService.replyToTweet(id, tweetDtoSimpleInput);
+        TweetDtoOutput output = tweetService.replyToTweet(id, tweetDtoSimpleInput);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
 
     @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
     public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody TweetDtoRepost tweetDtoRepost, HttpServletResponse httpResponse) {
-        return tweetService.repostTweet(id, tweetDtoRepost);
+        TweetDtoOutput output =  tweetService.repostTweet(id, tweetDtoRepost);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
     public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getTags(id);
+        List<HashtagDtoOutput> output = tweetService.getTags(id);
+        if (output != null && !output.isEmpty()) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}/likes", method = RequestMethod.GET)
     public List<UserDtoOutput> getLikes(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getLikes(id);
+        List<UserDtoOutput> output =  tweetService.getLikes(id);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}/replies", method = RequestMethod.GET)
     public List<TweetDtoOutput> getReplyTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getReplyTweets(id);
+        List<TweetDtoOutput> output = tweetService.getReplyTweets(id);
+        if (output != null && !output.isEmpty()) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}/reposts", method = RequestMethod.GET)
     public List<TweetDtoOutput> getRepostsOfTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getRepostsOfTweet(id);
+        List<TweetDtoOutput> output = tweetService.getRepostsOfTweet(id);
+        if (output != null && !output.isEmpty()) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "/{id}/mentions", method = RequestMethod.GET)
     public List<UserDtoOutput> getMentionedUsers(@PathVariable Long id, HttpServletResponse httpResponse) {
-        return tweetService.getMentionedUsers(id);
+        List<UserDtoOutput> output = tweetService.getMentionedUsers(id);
+        if (output != null && !output.isEmpty()) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
 //    @RequestMapping(value = "/{id}/context", method = RequestMethod.GET)

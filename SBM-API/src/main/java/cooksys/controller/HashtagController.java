@@ -34,7 +34,6 @@ public class HashtagController {
     public List<TweetDtoOutput> getTweets(@PathVariable String label, HttpServletResponse response) {
         List<TweetDtoOutput> output = hashtagService.getTweetsByHashtag(label.replace("@", ""));
         if (output != null) {
-            // TODO check all responses and figure which are appropriate for uses cases. This is one example.
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
         } else {

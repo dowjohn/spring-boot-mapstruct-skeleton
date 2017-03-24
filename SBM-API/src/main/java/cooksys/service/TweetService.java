@@ -115,10 +115,10 @@ public class TweetService {
         return names;
     }
 
-    // TODO offload to hashtagService
+    // TODO offload to hashtagService or utility service or object class
     public Set<String> parseHashtags(String content) {
         Set<String> hashtags = new HashSet<>();
-        String[] words = content.split(" ");
+        Set<String> words = new HashSet<String>(Arrays.asList(content.split(" ")));
         for (String word : words) {
             if (word.startsWith("#")) {
                 hashtags.add(word.substring(1));

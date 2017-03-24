@@ -53,43 +53,58 @@ public class UserController {
     @ApiOperation(value = "", nickname = "createUser")
     public UserDtoOutput post(@RequestBody UserDtoCreate userDtoCreate, HttpServletResponse httpResponse) {
         UserDtoOutput output = userService.post(userDtoCreate);
-        httpResponse.setStatus(HttpServletResponse.SC_CREATED);
-        return output;
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_CREATED);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
     }
 
 
     @PatchMapping("{username}")
     @ApiOperation(value = "", nickname = "updateUser")
     public UserDtoOutput patch(@PathVariable String username, @RequestBody UserDtoCreate userDto, HttpServletResponse httpResponse) {
-        return userService.patch(username.replace("@", ""), userDto);
+        UserDtoOutput output = userService.patch(username.replace("@", ""), userDto);
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return null;
+        }
     }
 
     // really a patch tho
     @DeleteMapping("{username}")
     @ApiOperation(value = "", nickname = "deactivateUser")
     public UserDtoOutput delete(@PathVariable String username, HttpServletResponse httpResponse) {
-        return userService.deactivate(username.replace("@", ""));
+        UserDtoOutput output = userService.deactivate(username.replace("@", ""));
+        if (output != null) {
+            httpResponse.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @RequestMapping(value = "{username}/follow", method = RequestMethod.PATCH)
-    public boolean followUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
+    public void followUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
         if (userService.followUser(username.replace("@", ""), creds)) {
-            response.setStatus(HttpServletResponse.SC_CREATED);
-            return true;
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            return false;
         }
     }
 
     @RequestMapping(value = "{username}/unfollow", method = RequestMethod.PATCH)
-    public boolean unfollowUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
+    public void unfollowUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
         if (userService.unfollowUser(username.replace("@", ""), creds)) {
             response.setStatus(HttpServletResponse.SC_CREATED);
-            return true;
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            return false;
         }
     }
 
@@ -97,7 +112,7 @@ public class UserController {
     @RequestMapping(value = "{username}/feed", method = RequestMethod.PATCH)
     public List<TweetDtoOutput> feedOfTweets(@PathVariable String username, HttpServletResponse response) {
         List<TweetDtoOutput> output = userService.getFeed(username.replace("@", ""));
-        if (output != null) {
+        if (output != null && !output.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
         } else {
