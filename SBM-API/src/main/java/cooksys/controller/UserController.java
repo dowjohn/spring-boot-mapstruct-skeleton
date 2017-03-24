@@ -25,8 +25,15 @@ public class UserController {
 
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllUsers")
-    public List<UserDtoOutput> index() {
-        return userService.index();
+    public List<UserDtoOutput> getAllUsers(HttpServletResponse response) {
+        List<UserDtoOutput> output =  userService.getAllUsers();
+        if (output != null) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return output;
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
     }
 
     @GetMapping("{username}")
@@ -34,11 +41,12 @@ public class UserController {
     public UserDtoOutput getUserByName(@RequestParam(value="username") String username, HttpServletResponse response) {
         UserDtoOutput output = userService.getUserByName(username.replace("@", ""));
         if (output != null) {
+            response.setStatus(HttpServletResponse.SC_OK);
             return output;
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return null;
         }
-        return null;
     }
 
     @PostMapping

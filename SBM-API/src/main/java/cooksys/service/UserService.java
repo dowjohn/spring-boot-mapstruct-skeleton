@@ -34,10 +34,11 @@ public class UserService {
     @Autowired
     private TweetMapper tweetMapper;
 
-    public List<UserDtoOutput> index() {
+    public List<UserDtoOutput> getAllUsers() {
         return userRepository
                 .findAll()
                 .stream()
+                .filter(User::isActive)
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }

@@ -39,7 +39,6 @@ public class TweetService {
     }
 
     public TweetDtoOutput post(TweetDtoSimpleInput tweetDtoSimpleInput) {
-//        tweetRepository.save(tweetMapper.toTweet(tweetDtoSimpleInput));
         User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoSimpleInput.getCredentials().getUsername());
 
         if (userPostingTweet != null && userPostingTweet.getCredentials().getPassword().equals(tweetDtoSimpleInput.getCredentials().getPassword())) {
@@ -150,8 +149,6 @@ public class TweetService {
         User user = userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword());
         Tweet tweet = tweetRepository.findOne(id);
         if (user != null && tweet != null) {
-//            user.getLikedTweets().add(tweet);
-//            userRepository.saveAndFlush(user);
             tweet.getLikedIt().add(user);
             tweetRepository.saveAndFlush(tweet);
             return true;
@@ -171,13 +168,10 @@ public class TweetService {
             tweet.setAuthor(userPostingTweet);
 
             //-----------------------------------------reply logic
-
             Tweet repliedTo = tweetRepository.findOne(id);
             tweet.setOriginalTweetReply(repliedTo);
-//            tweetRepository.save(repliedTo);
             //-----------------------------------------
             Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
-//            tweetRepository.save(repliedTo);
             Tweet tweety = tweetRepository.findOne(tweetId);
 
             //Saving mentions
@@ -220,32 +214,11 @@ public class TweetService {
 
             Tweet repostOf = tweetRepository.findOne(id);
             tweet.setParentTweetRepost(repostOf);
-//            tweetRepository.save(repliedTo);
             //-----------------------------------------
             Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
             Tweet tweety = tweetRepository.findOne(tweetId);
 
-            //Saving mentions
-//            List<User> gottenUsers = new ArrayList<>();
-//            for (String aUsername : parseUsers(tweety.getContent())) {
-//                User found = userRepository.findByCredentialsUsername(aUsername);
-//                if (found != null) {
-//                    gottenUsers.add(userRepository.findOne(found.getId()));
-//                }
-//            }
-//            tweety.setMentions(gottenUsers);
-//            Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
             TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
-
-            // Saving hashtags
-//            Set<Hashtag> saved = saveHashtags(tweety);
-
-            // Saving tweets hashtags to tweet (relation) TODO alter to use set in entity and these nested methods.
-//            Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
-//            List<Hashtag> dumbyList = new ArrayList<>();
-//            dumbyList.addAll(saved);
-//            bestTweetEver.setHashtags(dumbyList);
-//            tweetRepository.saveAndFlush(bestTweetEver);
             return out;
         }
         return null;

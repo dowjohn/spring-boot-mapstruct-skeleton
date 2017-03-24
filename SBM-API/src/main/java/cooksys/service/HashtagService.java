@@ -25,8 +25,12 @@ public class HashtagService {
     TweetMapper tweetMapper;
 
     public boolean tagExists(String substring) {
-        return true;
-        // TODO
+        if (hashtagRepository.findByLabel(substring) != null) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
