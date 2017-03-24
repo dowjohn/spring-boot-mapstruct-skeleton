@@ -1,15 +1,12 @@
 package cooksys.mapper;
 
 import cooksys.dto.TweetDtoOutput;
+import cooksys.dto.TweetDtoRepost;
 import cooksys.dto.TweetDtoSimpleInput;
 import cooksys.entity.Tweet;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-
-/**
- * Created by student-2 on 3/22/2017.
- */
 
 @Mapper(componentModel = "spring")
 public interface TweetMapper {
@@ -27,4 +24,6 @@ public interface TweetMapper {
             @Mapping(source = "content", target = "content")
     })
     Tweet toTweet(TweetDtoSimpleInput input);
+
+    Tweet toTweetFromRepost(TweetDtoRepost tweetDtoRepost);
 }

@@ -1,11 +1,14 @@
 package cooksys.service;
 
+import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
+import cooksys.dto.TweetDtoRepost;
 import cooksys.dto.TweetDtoSimpleInput;
 import cooksys.entity.Credentials;
 import cooksys.entity.Hashtag;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
+import cooksys.mapper.HashtagMapper;
 import cooksys.mapper.TweetMapper;
 import cooksys.repository.HashtagRepository;
 import cooksys.repository.TweetRepository;
@@ -28,6 +31,8 @@ public class TweetService {
     private UserRepository userRepository;
     @Autowired
     private HashtagRepository hashtagRepository;
+    @Autowired
+    private HashtagMapper hashtagMapper;
 
     public List<TweetDtoOutput> getAll() {
         return tweetRepository.findAll().stream().filter(x -> x.isAlive()).map(tweetMapper::toTweetDtoOutput).collect(Collectors.toList());
@@ -65,6 +70,9 @@ public class TweetService {
             Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
             List<Hashtag> dumbyList = new ArrayList<>();
             dumbyList.addAll(saved);
+            for (Hashtag hash : dumbyList) {
+                System.out.println(hash.getLabel());
+            }
             bestTweetEver.setHashtags(dumbyList);
             tweetRepository.saveAndFlush(bestTweetEver);
             return out;
@@ -75,22 +83,20 @@ public class TweetService {
     // TODO offload to hashtagService or some utility class
     public Set<Hashtag> saveHashtags(Tweet tweet) {
         Set<String> hashtagStrings = parseHashtags(tweet.getContent());
-        Set<Hashtag> hashtagsToSave = new HashSet<>();
         List<String> allHashtags = hashtagRepository.findAll().stream().map(x -> x.getLabel()).collect(Collectors.toList());
         for (String hashtag : hashtagStrings) {
             if (!allHashtags.contains(hashtag)) {
-                hashtagsToSave.add(new Hashtag(hashtag));
+                System.out.println(hashtag);
+                hashtagRepository.saveAndFlush(new Hashtag(hashtag));
             }
         }
-        hashtagRepository.save(hashtagsToSave);
-        hashtagRepository.flush();
-
 
         // TODO offload
         Set<Hashtag> gottenHashs = new HashSet<>();
         for (String aUsername : hashtagStrings) {
             Hashtag found = hashtagRepository.findByLabel(aUsername);
             if (found != null) {
+                System.out.println(found.getLabel() + "offload");
                 gottenHashs.add(hashtagRepository.findOne(found.getId()));
             }
         }
@@ -116,6 +122,7 @@ public class TweetService {
         for (String word : words) {
             if (word.startsWith("#")) {
                 hashtags.add(word.substring(1));
+                System.out.println(word);
             }
         }
         return hashtags;
@@ -195,5 +202,53 @@ public class TweetService {
             return out;
         }
         return null;
+    }
+
+    public TweetDtoOutput repostTweet(Long id, TweetDtoRepost tweetDtoRepost) {
+        User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoRepost.getCredentials().getUsername());
+
+        if (userPostingTweet != null && userPostingTweet.getCredentials().getPassword().equals(tweetDtoRepost.getCredentials().getPassword())) {
+
+            // saving tweet TODO alter mapper to do this save logic.
+            Tweet tweet = tweetMapper.toTweetFromRepost(tweetDtoRepost);
+            tweet.setAuthor(userPostingTweet);
+
+            //-----------------------------------------reply logic
+
+            Tweet repostOf = tweetRepository.findOne(id);
+            tweet.setParentTweetRepost(repostOf);
+//            tweetRepository.save(repliedTo);
+            //-----------------------------------------
+            Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
+            Tweet tweety = tweetRepository.findOne(tweetId);
+
+            //Saving mentions
+//            List<User> gottenUsers = new ArrayList<>();
+//            for (String aUsername : parseUsers(tweety.getContent())) {
+//                User found = userRepository.findByCredentialsUsername(aUsername);
+//                if (found != null) {
+//                    gottenUsers.add(userRepository.findOne(found.getId()));
+//                }
+//            }
+//            tweety.setMentions(gottenUsers);
+//            Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
+            TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
+
+            // Saving hashtags
+//            Set<Hashtag> saved = saveHashtags(tweety);
+
+            // Saving tweets hashtags to tweet (relation) TODO alter to use set in entity and these nested methods.
+//            Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
+//            List<Hashtag> dumbyList = new ArrayList<>();
+//            dumbyList.addAll(saved);
+//            bestTweetEver.setHashtags(dumbyList);
+//            tweetRepository.saveAndFlush(bestTweetEver);
+            return out;
+        }
+        return null;
+    }
+
+    public List<HashtagDtoOutput> getTags(Long id) {
+        return tweetRepository.findOne(id).getHashtags().stream().map(hashtagMapper::toHashtagDtoOutput).collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package cooksys.controller;
 
 import cooksys.dto.HashtagDtoOutput;
 import cooksys.dto.TweetDtoOutput;
+import cooksys.dto.TweetDtoRepost;
 import cooksys.dto.TweetDtoSimpleInput;
 import cooksys.entity.Credentials;
 import cooksys.entity.Tweet;
@@ -68,18 +69,17 @@ public class TweetController {
     public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
         return tweetService.replyToTweet(id, tweetDtoSimpleInput);
     }
-//
-//
-//    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
-//    public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
-//        return tweetService.repostTweet(id, credentials);
-//    }
-//
-//
-//    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
-//    public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
-//        return tweetService.getTags(id);
-//    }
+
+
+    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
+    public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody TweetDtoRepost tweetDtoRepost, HttpServletResponse httpResponse) {
+        return tweetService.repostTweet(id, tweetDtoRepost);
+    }
+
+    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
+    public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getTags(id);
+    }
 //
 //
 //    @RequestMapping(value = "/{id}/likes", method = RequestMethod.PATCH)
