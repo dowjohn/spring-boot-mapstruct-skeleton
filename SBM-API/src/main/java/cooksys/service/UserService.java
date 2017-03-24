@@ -90,10 +90,10 @@ public class UserService {
             return null;
         }
     }
-    
+
     public boolean followUser(String username, Credentials creds) {
         User follower = userRepository.findByCredentialsUsernameAndCredentialsPasswordAndIsActiveTrue(creds.getUsername(), creds.getPassword());
-        User leader = userRepository.findByCredentialsUsername(username);
+        User leader = userRepository.findByCredentialsUsernameAndIsActiveTrue(username);
         if (leader != null && follower != null && !leader.getFollowers().contains(follower)) {
             follower.getLeaders().add(leader);
             userRepository.saveAndFlush(follower);
@@ -103,13 +103,11 @@ public class UserService {
     }
 
     public boolean unfollowUser(String username, Credentials creds) {
-        User leader = userRepository.findByCredentialsUsername(creds.getUsername());
-        User follower = userRepository.findByCredentialsUsername(username);
-        if (leader != null && leader.isActive() == true && follower != null && leader.getFollowers().contains(follower)) {
+        User follower = userRepository.findByCredentialsUsernameAndCredentialsPasswordAndIsActiveTrue(creds.getUsername(), creds.getPassword());
+        User leader = userRepository.findByCredentialsUsernameAndIsActiveTrue(username);
+        if (leader != null && follower != null && leader.getFollowers().contains(follower)) {
             follower.getLeaders().remove(leader);
-            leader.getFollowers().remove(follower);
-            userRepository.save(follower);
-            userRepository.saveAndFlush(leader);
+            userRepository.saveAndFlush(follower);
             return true;
         }
         return false;
