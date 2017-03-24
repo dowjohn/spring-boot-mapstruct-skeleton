@@ -2,7 +2,6 @@ package cooksys.controller;
 
 import cooksys.dto.*;
 import cooksys.entity.Credentials;
-import cooksys.entity.Tweet;
 import cooksys.service.TweetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

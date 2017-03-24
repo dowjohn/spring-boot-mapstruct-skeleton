@@ -85,6 +85,10 @@ public class TweetService {
             if (!allHashtags.contains(hashtag)) {
                 System.out.println(hashtag);
                 hashtagRepository.saveAndFlush(new Hashtag(hashtag));
+            } else {
+                Hashtag hash = hashtagRepository.findByLabel(hashtag);
+                hash.setLast(new Date());
+                hashtagRepository.saveAndFlush(hash);
             }
         }
 
