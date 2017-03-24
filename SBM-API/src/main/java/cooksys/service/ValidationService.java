@@ -20,7 +20,7 @@ public class ValidationService {
     public boolean userAvailable(String substring) {
         return userRepository.findByCredentialsUsername(substring) != null;
     }
-    
+
     public boolean userExists(String substring) {
         return userRepository.findByCredentialsUsernameAndIsActiveTrue(substring) != null;
     }

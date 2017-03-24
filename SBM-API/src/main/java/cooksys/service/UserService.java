@@ -35,14 +35,11 @@ public class UserService {
     private TweetMapper tweetMapper;
 
     public List<UserDtoOutput> getAllUsers() {
-        return userRepository
-                .findAll()
+        return userRepository.findByIsActiveTrue()
                 .stream()
-                .filter(User::isActive)
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }
-
 
     public UserDtoOutput get(Long id) {
         return userMapper.toUserDtoOutput(userRepository.getOne(id));
@@ -50,7 +47,6 @@ public class UserService {
 
     public UserDtoOutput post(UserDtoCreate userDtoCreate) {
         Long idOf = userRepository.saveAndFlush(userMapper.toUser(userDtoCreate)).getId();
-        // TODO Timestamp is returning null;
         return userMapper.toUserDtoOutput(userRepository.findOne(idOf));
     }
 
@@ -58,6 +54,7 @@ public class UserService {
         return userMapper.toUserDtoOutput(userRepository.findByCredentialsUsername(username));
     }
 
+    // TODO refactor to get rid of this if statement hell
     public UserDtoOutput patch(String username, UserDtoCreate userDto) {
         User userExistant = userRepository.findByCredentialsUsername(username);
 
@@ -66,8 +63,6 @@ public class UserService {
                 || !userExistant.getCredentials().getPassword().equals(userDto.getCredentials().getPassword())) {
             return null;
         } else {
-//            copyNonNullProperties(userMapper.toUser(userDto), userExistant);
-//            userExistant.setProfile(userDto.getProfile());
             if (userDto.getProfile().getEmail() != null) {
                 userExistant.getProfile().setEmail(userDto.getProfile().getEmail());
             }
@@ -89,20 +84,18 @@ public class UserService {
         User user = userRepository.findByCredentialsUsername(username);
         if (user != null) {
             user.setActive(false);
-            userRepository.save(user);
+            userRepository.saveAndFlush(user);
             return userMapper.toUserDtoOutput(user);
         } else {
             return null;
         }
     }
-
+    
     public boolean followUser(String username, Credentials creds) {
-        User leader = userRepository.findByCredentialsUsername(creds.getUsername());
-        User follower = userRepository.findByCredentialsUsername(username);
-        if (leader != null && leader.isActive() == true && follower != null && !leader.getFollowers().contains(follower)) {
-            leader.getFollowers().add(follower);
+        User follower = userRepository.findByCredentialsUsernameAndCredentialsPasswordAndIsActiveTrue(creds.getUsername(), creds.getPassword());
+        User leader = userRepository.findByCredentialsUsername(username);
+        if (leader != null && follower != null && !leader.getFollowers().contains(follower)) {
             follower.getLeaders().add(leader);
-            userRepository.save(leader);
             userRepository.saveAndFlush(follower);
             return true;
         }
