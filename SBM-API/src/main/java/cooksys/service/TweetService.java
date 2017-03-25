@@ -35,30 +35,25 @@ public class TweetService {
     private HashtagMapper hashtagMapper;
 
     public List<TweetDtoOutput> getAll() {
-        return tweetRepository.findAll().stream().filter(x -> x.isAlive()).map(tweetMapper::toTweetDtoOutput).collect(Collectors.toList());
+        return tweetRepository
+                .findAll()
+                .stream().filter(Tweet::isAlive)
+                .map(tweetMapper::toTweetDtoOutput)
+                .collect(Collectors.toList());
     }
 
     public TweetDtoOutput post(TweetDtoSimpleInput tweetDtoSimpleInput) {
-        User userPostingTweet = userRepository.findByCredentialsUsername(tweetDtoSimpleInput.getCredentials().getUsername());
-
-        if (userPostingTweet != null && userPostingTweet.getCredentials().getPassword().equals(tweetDtoSimpleInput.getCredentials().getPassword())) {
-
+        Credentials creds = tweetDtoSimpleInput.getCredentials();
+        User userPostingTweet = userRepository.findByCredentialsUsernameAndCredentialsPassword(creds.getUsername(), creds.getPassword());
+        checkAndActivateUser(userPostingTweet);
+        if (userPostingTweet != null) {
             // saving tweet TODO alter mapper to do this save logic.
             Tweet tweet = tweetMapper.toTweet(tweetDtoSimpleInput);
-            tweet.setContent(tweetDtoSimpleInput.getContent());
             tweet.setAuthor(userPostingTweet);
+            // set mentions, no save
+            setMentions(tweet);
             Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
             Tweet tweety = tweetRepository.findOne(tweetId);
-
-            //Saving mentions
-            List<User> gottenUsers = new ArrayList<>();
-            for (String aUsername : parseUsers(tweety.getContent())) {
-                User found = userRepository.findByCredentialsUsername(aUsername);
-                if (found != null) {
-                    gottenUsers.add(userRepository.findOne(found.getId()));
-                }
-            }
-            tweety.setMentions(gottenUsers);
             Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
             TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
 
@@ -79,10 +74,13 @@ public class TweetService {
     // TODO offload to hashtagService or some utility class
     public Set<Hashtag> saveHashtags(Tweet tweet) {
         Set<String> hashtagStrings = parseHashtags(tweet.getContent());
-        List<String> allHashtags = hashtagRepository.findAll().stream().map(x -> x.getLabel()).collect(Collectors.toList());
+        List<String> allHashtags = hashtagRepository
+                .findAll()
+                .stream()
+                .map(hash -> hash.getLabel())
+                .collect(Collectors.toList());
         for (String hashtag : hashtagStrings) {
             if (!allHashtags.contains(hashtag)) {
-                System.out.println(hashtag);
                 hashtagRepository.saveAndFlush(new Hashtag(hashtag));
             } else {
                 Hashtag hash = hashtagRepository.findByLabel(hashtag);
@@ -96,37 +94,13 @@ public class TweetService {
         for (String aUsername : hashtagStrings) {
             Hashtag found = hashtagRepository.findByLabel(aUsername);
             if (found != null) {
-                System.out.println(found.getLabel() + "offload");
                 gottenHashs.add(hashtagRepository.findOne(found.getId()));
             }
         }
         return gottenHashs;
     }
 
-    // TODO offload to userService
-    public Set<String> parseUsers(String content){
-        Set<String> names = new HashSet<>();
-        String[] words = content.split(" ");
-        for (String word : words) {
-            if (word.startsWith("@")) {
-                names.add(word.substring(1));
-            }
-        }
-        return names;
-    }
 
-    // TODO offload to hashtagService or utility service or object class
-    public Set<String> parseHashtags(String content) {
-        Set<String> hashtags = new HashSet<>();
-        Set<String> words = new HashSet<String>(Arrays.asList(content.split(" ")));
-        for (String word : words) {
-            if (word.startsWith("#")) {
-                hashtags.add(word.substring(1));
-                System.out.println(word);
-            }
-        }
-        return hashtags;
-    }
 
     // TODO null check if repository cant find tweet of Long id
     public TweetDtoOutput getTweet(Long id) {
@@ -235,7 +209,7 @@ public class TweetService {
                 .getOne(id)
                 .getLikedIt()
                 .stream()
-                .filter(x -> x.isActive())
+                .filter(User::isActive)
                 .map(userMapper::toUserDtoOutput)
                 .collect(Collectors.toList());
     }
@@ -290,5 +264,47 @@ public class TweetService {
 //            tweets.addAll(getParent(tweety));
 //        }
 //    }
+    // ACTIVATE TWEET
+    private void checkAndActivateUser(User user) {
+        if (user != null && user.isActive() == false) {
+            user.setActive(true);
+            userRepository.saveAndFlush(user);
+        }
+    }
 
+    // TODO offload to userService
+    private Set<String> parseUsers(String content){
+        Set<String> names = new HashSet<>();
+        String[] words = content.split(" ");
+        for (String word : words) {
+            if (word.startsWith("@")) {
+                names.add(word.substring(1));
+            }
+        }
+        return names;
+    }
+
+    // TODO offload to hashtagService or utility service or object class
+    private Set<String> parseHashtags(String content) {
+        Set<String> hashtags = new HashSet<>();
+        Set<String> words = new HashSet<String>(Arrays.asList(content.split(" ")));
+        for (String word : words) {
+            if (word.startsWith("#")) {
+                hashtags.add(word.substring(1));
+            }
+        }
+        return hashtags;
+    }
+
+    private void setMentions(Tweet tweet) {
+        //Saving mentions
+        List<User> gottenUsers = new ArrayList<>();
+        for (String aUsername : parseUsers(tweet.getContent())) {
+            User found = userRepository.findByCredentialsUsername(aUsername);
+            if (found != null) {
+                gottenUsers.add(userRepository.findOne(found.getId()));
+            }
+        }
+        tweet.setMentions(gottenUsers);
+    }
 }

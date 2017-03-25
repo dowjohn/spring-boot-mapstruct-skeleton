@@ -6,15 +6,11 @@ import cooksys.service.TweetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- * Created by student-2 on 3/21/2017.
- */
 @RestController
 @RequestMapping("tweets")
 @Api(tags = {"public", "tweets"})
