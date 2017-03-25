@@ -186,13 +186,17 @@ public class TweetService {
 
     // TODO add error catching
     public List<HashtagDtoOutput> getTags(Long id) {
-        return tweetRepository.findOne(id).getHashtags().stream().map(hashtagMapper::toHashtagDtoOutput).collect(Collectors.toList());
+        return tweetRepository
+                .findByIdAndIsAliveTrue(id)
+                .getHashtags()
+                .stream()
+                .map(hashtagMapper::toHashtagDtoOutput)
+                .collect(Collectors.toList());
     }
 
-    // TODO add error catching. check if original tweet is alive
     public List<UserDtoOutput> getLikes(Long id) {
         return tweetRepository
-                .getOne(id)
+                .findByIdAndIsAliveTrue(id)
                 .getLikedIt()
                 .stream()
                 .filter(User::isActive)
@@ -200,10 +204,9 @@ public class TweetService {
                 .collect(Collectors.toList());
     }
 
-    // TODO add error handling and null catch check if orignal tweet is alive
     public List<TweetDtoOutput> getReplyTweets(Long id) {
         return tweetRepository
-                .getOne(id)
+                .findByIdAndIsAliveTrue(id)
                 .getReplies()
                 .stream()
                 .filter(Tweet::isAlive)
@@ -211,14 +214,13 @@ public class TweetService {
                 .collect(Collectors.toList());
     }
 
-    // TODO add error handling and null catch, check if original tweet is alive
     public List<TweetDtoOutput> getRepostsOfTweet(Long id) {
         return tweetRepository.findByIdAndIsAliveTrue(id)
-                     .getReposts()
-                     .stream()
-                     .filter(Tweet::isAlive)
-                     .map(tweetMapper::toTweetDtoOutput)
-                     .collect(Collectors.toList());
+                .getReposts()
+                .stream()
+                .filter(Tweet::isAlive)
+                .map(tweetMapper::toTweetDtoOutput)
+                .collect(Collectors.toList());
     }
 
     public List<UserDtoOutput> getMentionedUsers(Long id) {
