@@ -47,26 +47,12 @@ public class TweetService {
         User userPostingTweet = userRepository.findByCredentialsUsernameAndCredentialsPassword(creds.getUsername(), creds.getPassword());
         checkAndActivateUser(userPostingTweet);
         if (userPostingTweet != null) {
-            // saving tweet TODO alter mapper to do this save logic.
             Tweet tweet = tweetMapper.toTweet(tweetDtoSimpleInput);
             tweet.setAuthor(userPostingTweet);
-            // set mentions, no save
             setMentions(tweet);
-            Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
-            Tweet tweety = tweetRepository.findOne(tweetId);
-            Long yetAnotherId = tweetRepository.saveAndFlush(tweety).getId();
-            TweetDtoOutput out =  tweetMapper.toTweetDtoOutput(tweety);
-
-            // Saving hashtags
-            Set<Hashtag> saved = saveHashtags(tweety);
-
-            // Saving tweets hashtags to tweet (relation) TODO alter to use set in entity and these nested methods.
-            Tweet bestTweetEver = tweetRepository.getOne(yetAnotherId);
-            List<Hashtag> dumbyList = new ArrayList<>();
-            dumbyList.addAll(saved);
-            bestTweetEver.setHashtags(dumbyList);
-            tweetRepository.saveAndFlush(bestTweetEver);
-            return out;
+            tweet.setHashtags(new ArrayList<>(saveHashtags(tweet)));
+            Long id = tweetRepository.saveAndFlush(tweet).getId();
+            return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(id));
         }
         return null;
     }
@@ -77,7 +63,7 @@ public class TweetService {
         List<String> allHashtags = hashtagRepository
                 .findAll()
                 .stream()
-                .map(hash -> hash.getLabel())
+                .map(Hashtag::getLabel)
                 .collect(Collectors.toList());
         for (String hashtag : hashtagStrings) {
             if (!allHashtags.contains(hashtag)) {
@@ -227,26 +213,21 @@ public class TweetService {
 
     // TODO add error handling and null catch, check if original tweet is alive
     public List<TweetDtoOutput> getRepostsOfTweet(Long id) {
-        return tweetRepository
-                .getOne(id)
-                .getReposts()
-                .stream()
-                .filter(Tweet::isAlive)
-                .map(tweetMapper::toTweetDtoOutput)
-                .collect(Collectors.toList());
+        return tweetRepository.findByIdAndIsAliveTrue(id)
+                     .getReposts()
+                     .stream()
+                     .filter(Tweet::isAlive)
+                     .map(tweetMapper::toTweetDtoOutput)
+                     .collect(Collectors.toList());
     }
 
-    // TODO test to see if working
     public List<UserDtoOutput> getMentionedUsers(Long id) {
-        Tweet tweet =  tweetRepository.getOne(id);
-        if (tweet.isAlive()) {
-            return tweet.getMentions()
-                    .stream()
-                    .filter(x -> x.isActive())
-                    .map(userMapper::toUserDtoOutput)
-                    .collect(Collectors.toList());
-        }
-        return null;
+        return tweetRepository.findByIdAndIsAliveTrue(id)
+                .getMentions()
+                .stream()
+                .filter(User::isActive)
+                .map(userMapper::toUserDtoOutput)
+                .collect(Collectors.toList());
     }
 
 //    public List<TweetDtoOutput> getContextTweets(Long id) {
