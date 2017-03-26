@@ -53,7 +53,12 @@
 			<artifactId>SBM-DB</artifactId>
 			<version>${sbm.db.version}</version>
 		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+    </dependencies>
 
 	<build>
 		<plugins>

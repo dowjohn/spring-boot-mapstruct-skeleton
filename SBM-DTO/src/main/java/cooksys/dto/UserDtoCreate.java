@@ -1,5 +1,6 @@
 package cooksys.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cooksys.entity.Credentials;
 import cooksys.entity.Profile;
 import cooksys.entity.Tweet;
@@ -8,6 +9,8 @@ import cooksys.entity.User;
 import java.util.Set;
 
 public class UserDtoCreate {
+
+    @JsonIgnore
     private Long id;
 
     private boolean isActive;

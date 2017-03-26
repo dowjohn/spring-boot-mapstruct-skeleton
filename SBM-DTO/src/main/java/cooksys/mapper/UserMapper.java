@@ -8,18 +8,9 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mappings({
-//            @Mapping(target="credentials", ignore=true),
             @Mapping(target="timestamp", ignore=true)
     })
     User toUser(UserDtoCreate userDtoCreate);
-
-
-    @Mappings({
-            @Mapping(target="credentials", ignore=true),
-//            @Mapping(target="", ignore=true)
-    })
-    UserDtoCreate toUserDto(User user);
-
 
     @Mappings({
             @Mapping(source = "credentials.username",target="username"),

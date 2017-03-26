@@ -1,14 +1,11 @@
 package cooksys.dto;
 
 import cooksys.entity.Credentials;
-import cooksys.entity.Hashtag;
-import cooksys.entity.User;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TweetDtoSimpleInput {
+
     private String content;
+
     private Credentials credentials;
 
     public String getContent() {

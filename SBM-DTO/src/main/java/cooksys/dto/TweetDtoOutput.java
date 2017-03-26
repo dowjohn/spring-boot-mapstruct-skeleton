@@ -1,13 +1,22 @@
 package cooksys.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class TweetDtoOutput {
+
     private Long id;
+
     private String author;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date posted;
+
     private String content;
+
     private Long replyTo;
+
     private Long repostOf;
 
     public Long getId() {

@@ -5,6 +5,7 @@ import cooksys.dto.TweetDtoOutput;
 import cooksys.dto.UserDtoCreate;
 import cooksys.dto.UserDtoOutput;
 import cooksys.entity.Credentials;
+import cooksys.entity.Profile;
 import cooksys.entity.Tweet;
 import cooksys.entity.User;
 import cooksys.mapper.TweetMapper;
@@ -49,26 +50,29 @@ public class UserService {
         return userMapper.toUserDtoOutput(userRepository.findByCredentialsUsername(username));
     }
 
-    // TODO refactor to get rid of this if statement hell
+    // TODO refactor to get rid of if statement hell
     public UserDtoOutput patch(String username, UserDtoCreate userDto) {
         User userExistant = userRepository.findByCredentialsUsername(username);
-
+        Credentials existingCreds = userExistant.getCredentials();
+        Credentials dtoCreds = userDto.getCredentials();
         if (userExistant == null
-                || !userExistant.getCredentials().getUsername().equals(userDto.getCredentials().getUsername())
-                || !userExistant.getCredentials().getPassword().equals(userDto.getCredentials().getPassword())) {
+                || !existingCreds.getUsername().equals(dtoCreds.getUsername())
+                || !existingCreds.getPassword().equals(dtoCreds.getPassword())) {
             return null;
         } else {
+            Profile existingProfile = userExistant.getProfile();
+            Profile dtoProfile = userDto.getProfile();
             if (userDto.getProfile().getEmail() != null) {
-                userExistant.getProfile().setEmail(userDto.getProfile().getEmail());
+                existingProfile.setEmail(dtoProfile.getEmail());
             }
             if (userDto.getProfile().getFirstName() != null) {
-                userExistant.getProfile().setFirstName(userDto.getProfile().getFirstName());
+                existingProfile.setFirstName(dtoProfile.getFirstName());
             }
             if (userDto.getProfile().getLastName() != null) {
-                userExistant.getProfile().setFirstName(userDto.getProfile().getLastName());
+                existingProfile.setFirstName(dtoProfile.getLastName());
             }
             if(userDto.getProfile().getPhone() != null) {
-                userExistant.getProfile().setPhone(userDto.getProfile().getPhone());
+                existingProfile.setPhone(dtoProfile.getPhone());
             }
             userRepository.saveAndFlush(userExistant);
             return userMapper.toUserDtoOutput(userExistant);

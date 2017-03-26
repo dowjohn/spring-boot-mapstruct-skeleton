@@ -5,8 +5,11 @@ import cooksys.entity.Tweet;
 import java.util.List;
 
 public class ContextDto {
+
     private Tweet target;
+
     private List<Tweet> before;
+
     private List<Tweet> after;
 
     public ContextDto(){}

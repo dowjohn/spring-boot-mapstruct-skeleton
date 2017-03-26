@@ -23,14 +23,19 @@ public class TweetService {
 
     @Autowired
     private TweetRepository tweetRepository;
+
     @Autowired
     private TweetMapper tweetMapper;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private UserMapper userMapper;
+
     @Autowired
     private HashtagRepository hashtagRepository;
+
     @Autowired
     private HashtagMapper hashtagMapper;
 

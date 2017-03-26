@@ -15,6 +15,4 @@ public interface HashtagMapper {
             @Mapping(source = "last", target = "last")
     })
     HashtagDtoOutput toHashtagDtoOutput(Hashtag hashtag);
-
-//    Hashtag toHashtag(HashtagDtoOutput hashtag);
 }

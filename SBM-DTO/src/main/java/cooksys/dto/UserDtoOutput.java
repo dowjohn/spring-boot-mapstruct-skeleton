@@ -1,5 +1,6 @@
 package cooksys.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import cooksys.entity.Profile;
 
 import java.util.Date;
@@ -9,6 +10,7 @@ public class UserDtoOutput {
 
     private Profile profile;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date timestamp;
 
     public String getUsername() {
@@ -26,6 +28,7 @@ public class UserDtoOutput {
     public void setProfile(Profile profile) {
         this.profile = profile;
     }
+
 
     public Date getTimestamp() {
         return timestamp;
