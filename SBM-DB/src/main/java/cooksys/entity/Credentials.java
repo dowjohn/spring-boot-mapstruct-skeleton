@@ -38,8 +38,7 @@ public class Credentials {
 
         Credentials that = (Credentials) o;
 
-        if (!username.equals(that.username)) return false;
-        return password.equals(that.password);
+        return username.equals(that.username) && password.equals(that.password);
     }
 
     @Override

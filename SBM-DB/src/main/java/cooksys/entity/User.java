@@ -1,10 +1,6 @@
 package cooksys.entity;
 
-import org.hibernate.annotations.Persister;
-import org.springframework.data.annotation.Persistent;
-
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 

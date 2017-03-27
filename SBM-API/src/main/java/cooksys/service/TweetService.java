@@ -58,8 +58,9 @@ public class TweetService {
             tweet.setHashtags(new ArrayList<>(saveHashtags(tweet)));
             Long id = tweetRepository.saveAndFlush(tweet).getId();
             return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(id));
+        } else {
+            return null;
         }
-        return null;
     }
 
     public TweetDtoOutput getTweet(Long id) {
@@ -73,8 +74,9 @@ public class TweetService {
             tweet.setAlive(false);
             tweetRepository.saveAndFlush(tweet);
             return tweetMapper.toTweetDtoOutput(tweet);
+        } else {
+            return null;
         }
-        return null;
     }
 
     public boolean likeTweet(Long id, Credentials credentials) {
@@ -84,8 +86,9 @@ public class TweetService {
             tweet.getLikedIt().add(user);
             tweetRepository.saveAndFlush(tweet);
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     public TweetDtoOutput replyToTweet(Long idOfOriginal, TweetDtoSimpleInput tweetDtoSimpleInput) {
@@ -100,8 +103,9 @@ public class TweetService {
             tweet.setHashtags(new ArrayList<>(saveHashtags(tweet)));
             Long savedTweet = tweetRepository.saveAndFlush(tweet).getId();
             return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(savedTweet));
+        } else {
+            return null;
         }
-        return null;
     }
 
     public TweetDtoOutput repostTweet(Long idOfOriginal, TweetDtoRepost tweetDtoRepost) {
@@ -114,8 +118,9 @@ public class TweetService {
             tweet.setParentTweetRepost(tweetRepository.findOne(idOfOriginal));
             Long tweetId = tweetRepository.saveAndFlush(tweet).getId();
             return tweetMapper.toTweetDtoOutput(tweetRepository.findOne(tweetId));
+        } else {
+            return null;
         }
-        return null;
     }
 
     public List<HashtagDtoOutput> getTags(Long id) {
@@ -174,7 +179,7 @@ public class TweetService {
 //  Utility methods------------------------------------------
     // ACTIVATE TWEET
     private void checkAndActivateUser(User user) {
-        if (user != null && user.isActive() == false) {
+        if (user != null && !user.isActive()) {
             user.setActive(true);
             userRepository.saveAndFlush(user);
         }
