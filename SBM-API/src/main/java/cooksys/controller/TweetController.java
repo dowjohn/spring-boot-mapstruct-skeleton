@@ -24,7 +24,7 @@ public class TweetController {
         return tweetService.getAll();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public TweetDtoOutput getTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
         TweetDtoOutput output = tweetService.getTweet(id);
         if (output != null) {
@@ -65,7 +65,7 @@ public class TweetController {
 
     }
 
-    @RequestMapping(value = "/{id}/like", method = RequestMethod.PATCH)
+    @RequestMapping(value = "{id}/like", method = RequestMethod.PATCH)
     public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
         boolean good = tweetService.likeTweet(id, credentials);
         if (good) {
@@ -77,7 +77,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/reply", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
     public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
         TweetDtoOutput output = tweetService.replyToTweet(id, tweetDtoSimpleInput);
         if (output != null) {
@@ -90,7 +90,7 @@ public class TweetController {
     }
 
 
-    @RequestMapping(value = "/{id}/repost", method = RequestMethod.POST)
+    @RequestMapping(value = "{id}/repost", method = RequestMethod.POST)
     public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody TweetDtoRepost tweetDtoRepost, HttpServletResponse httpResponse) {
         TweetDtoOutput output =  tweetService.repostTweet(id, tweetDtoRepost);
         if (output != null) {
@@ -102,7 +102,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/tags", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/tags", method = RequestMethod.GET)
     public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<HashtagDtoOutput> output = tweetService.getTags(id);
         if (output != null && !output.isEmpty()) {
@@ -114,7 +114,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/likes", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/likes", method = RequestMethod.GET)
     public List<UserDtoOutput> getLikes(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<UserDtoOutput> output =  tweetService.getLikes(id);
         if (output != null) {
@@ -126,7 +126,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/replies", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/replies", method = RequestMethod.GET)
     public List<TweetDtoOutput> getReplyTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<TweetDtoOutput> output = tweetService.getReplyTweets(id);
         if (output != null && !output.isEmpty()) {
@@ -138,7 +138,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/reposts", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/reposts", method = RequestMethod.GET)
     public List<TweetDtoOutput> getRepostsOfTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<TweetDtoOutput> output = tweetService.getRepostsOfTweet(id);
         if (output != null && !output.isEmpty()) {
@@ -150,7 +150,7 @@ public class TweetController {
         }
     }
 
-    @RequestMapping(value = "/{id}/mentions", method = RequestMethod.GET)
+    @RequestMapping(value = "{id}/mentions", method = RequestMethod.GET)
     public List<UserDtoOutput> getMentionedUsers(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<UserDtoOutput> output = tweetService.getMentionedUsers(id);
         if (output != null && !output.isEmpty()) {

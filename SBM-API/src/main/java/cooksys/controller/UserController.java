@@ -34,10 +34,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("{username}")
+    @GetMapping("@{username}")
     @ApiOperation(value = "", nickname = "getUserByName")
     public UserDtoOutput getUserByName(@RequestParam(value="username") String username, HttpServletResponse response) {
-        UserDtoOutput output = userService.getUserByName(username.replace("@", ""));
+        UserDtoOutput output = userService.getUserByName(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_OK);
             return output;
@@ -61,10 +61,10 @@ public class UserController {
     }
 
 
-    @PatchMapping("{username}")
+    @PatchMapping("@{username}")
     @ApiOperation(value = "", nickname = "updateUser")
     public UserDtoOutput patch(@PathVariable String username, @RequestBody UserDtoCreate userDto, HttpServletResponse httpResponse) {
-        UserDtoOutput output = userService.patch(username.replace("@", ""), userDto);
+        UserDtoOutput output = userService.patch(username, userDto);
         if (output != null) {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return output;
@@ -75,10 +75,10 @@ public class UserController {
     }
 
     // really a patch tho
-    @DeleteMapping("{username}")
+    @DeleteMapping("@{username}")
     @ApiOperation(value = "", nickname = "deactivateUser")
     public UserDtoOutput delete(@PathVariable String username, HttpServletResponse httpResponse) {
-        UserDtoOutput output = userService.deactivate(username.replace("@", ""));
+        UserDtoOutput output = userService.deactivate(username);
         if (output != null) {
             httpResponse.setStatus(HttpServletResponse.SC_OK);
             return output;
@@ -88,18 +88,18 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{username}/follow", method = RequestMethod.PATCH)
+    @RequestMapping(value = "@{username}/follow", method = RequestMethod.PATCH)
     public void followUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
-        if (userService.followUser(username.replace("@", ""), creds)) {
+        if (userService.followUser(username, creds)) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
     }
 
-    @RequestMapping(value = "{username}/unfollow", method = RequestMethod.PATCH)
+    @RequestMapping(value = "@{username}/unfollow", method = RequestMethod.PATCH)
     public void unfollowUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
-        if (userService.unfollowUser(username.replace("@", ""), creds)) {
+        if (userService.unfollowUser(username, creds)) {
             response.setStatus(HttpServletResponse.SC_CREATED);
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
@@ -107,9 +107,9 @@ public class UserController {
     }
 
     //returns list of tweets of followed users in reverse chronological order (newest first)
-    @RequestMapping(value = "{username}/feed", method = RequestMethod.PATCH)
+    @RequestMapping(value = "@{username}/feed", method = RequestMethod.PATCH)
     public List<TweetDtoOutput> feedOfTweets(@PathVariable String username, HttpServletResponse response) {
-        List<TweetDtoOutput> output = userService.getFeed(username.replace("@", ""));
+        List<TweetDtoOutput> output = userService.getFeed(username);
         if (output != null && !output.isEmpty()) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
@@ -119,9 +119,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{username}/tweets", method = RequestMethod.GET)
+    @RequestMapping(value = "@{username}/tweets", method = RequestMethod.GET)
     public List<TweetDtoOutput> usersTweets(@PathVariable String username, HttpServletResponse response) {
-        List<TweetDtoOutput> output = userService.getUsersTweets(username.replace("@", ""));
+        List<TweetDtoOutput> output = userService.getUsersTweets(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
@@ -131,9 +131,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{username}/mentions", method = RequestMethod.GET)
+    @RequestMapping(value = "@{username}/mentions", method = RequestMethod.GET)
     public List<TweetDtoOutput> getMentionedInTweets(@PathVariable String username, HttpServletResponse response) {
-        List<TweetDtoOutput> output = userService.getMentionedInTweets(username.replace("@", ""));
+        List<TweetDtoOutput> output = userService.getMentionedInTweets(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
@@ -143,9 +143,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{username}/followers", method = RequestMethod.GET)
+    @RequestMapping(value = "@{username}/followers", method = RequestMethod.GET)
     public List<UserDtoOutput> getUsersFollowers(@PathVariable String username, HttpServletResponse response) {
-        List<UserDtoOutput> output = userService.getUsersFollowers(username.replace("@", ""));
+        List<UserDtoOutput> output = userService.getUsersFollowers(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
@@ -155,9 +155,9 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "{username}/following", method = RequestMethod.GET)
+    @RequestMapping(value = "@{username}/following", method = RequestMethod.GET)
     public List<UserDtoOutput> getUsersLeaders(@PathVariable String username, HttpServletResponse response) {
-        List<UserDtoOutput> output = userService.getUsersLeaders(username.replace("@", ""));
+        List<UserDtoOutput> output = userService.getUsersLeaders(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;
