@@ -10,7 +10,6 @@ public class TweetDtoOutput {
 
     private String author;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date posted;
 
     private String content;

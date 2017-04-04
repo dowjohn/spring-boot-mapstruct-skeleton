@@ -34,9 +34,9 @@ public class ValidationController {
         return validationService.userExists(name);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/tag/exists/#{label}")
+    @RequestMapping(method = RequestMethod.GET, value = "/tag/exists/{label}")
     @ApiOperation(value = "", nickname = "checkIfTagExists")
     public boolean doesTagExist(@PathVariable String label) {
-        return validationService.tagExists(label);
+        return validationService.tagExists(label.substring(1));
     }
 }

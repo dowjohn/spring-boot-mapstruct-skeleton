@@ -13,6 +13,7 @@ import cooksys.repository.TweetRepository;
 import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.plugin.javascript.navig.Array;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -170,13 +171,27 @@ public class TweetService {
                 .collect(Collectors.toList());
     }
 
-//    public List<TweetDtoOutput> getContextTweets(Long id) {
-//        Tweet tweet = tweetRepository.findOne(id);
-//        Set<Tweet> =
-//        return null;
-//    }
+    public List<TweetDtoOutput> getContextTweets(Long id) {
+        Tweet tweet = tweetRepository.findOne(id);
+        List<Tweet> output = new ArrayList<>();
+        setTheChildren(tweet, output);
+        return output
+                .stream()
+                .map(tweetMapper::toTweetDtoOutput)
+                .collect(Collectors.toList());
+    }
 
-//  Utility methods------------------------------------------
+    private void setTheChildren(Tweet parentTweet, List<Tweet> tweets) {
+        if (parentTweet.getReplies() != null) {
+            for (Tweet childTweet : parentTweet.getReplies()) {
+                tweets.add(childTweet);
+                setTheChildren(childTweet, tweets);
+            }
+        }
+    }
+
+
+    //  Utility methods------------------------------------------
     // ACTIVATE TWEET
     private void checkAndActivateUser(User user) {
         if (user != null && !user.isActive()) {

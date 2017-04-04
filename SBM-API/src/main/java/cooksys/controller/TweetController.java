@@ -36,7 +36,7 @@ public class TweetController {
         }
     }
 
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     @ApiOperation(value = "", nickname = "createSimpleTweet")
     public TweetDtoOutput post(@RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
@@ -162,8 +162,8 @@ public class TweetController {
         }
     }
 
-//    @RequestMapping(value = "/{id}/context", method = RequestMethod.GET)
-//    public List<TweetDtoOutput> getContextTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
-//        return tweetService.getContextTweets(id);
-//    }
+    @RequestMapping(value = "{id}/context", method = RequestMethod.GET)
+    public List<TweetDtoOutput> getContextTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
+        return tweetService.getContextTweets(id);
+    }
 }
