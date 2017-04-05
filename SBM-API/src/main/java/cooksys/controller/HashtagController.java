@@ -15,16 +15,18 @@ import java.util.List;
 @RequestMapping("tags")
 @Api(tags = {"public", "hashtags"})
 public class HashtagController {
+
     @Autowired
     private HashtagService hashtagService;
 
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllTags")
     public List<HashtagDtoOutput> getAll() {
         return hashtagService.getAll();
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "/{label}", method = RequestMethod.GET)
     public List<TweetDtoOutput> getTweets(@PathVariable String label, HttpServletResponse response) {
         List<TweetDtoOutput> output = hashtagService.getTweetsByHashtag(label.replace("@", ""));

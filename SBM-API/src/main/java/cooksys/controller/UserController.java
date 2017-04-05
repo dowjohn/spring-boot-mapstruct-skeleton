@@ -21,6 +21,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllUsers")
     public List<UserDtoOutput> getAllUsers(HttpServletResponse response) {
@@ -34,6 +35,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping("@{username}")
     @ApiOperation(value = "", nickname = "getUserByName")
     public UserDtoOutput getUserByName(@RequestParam(value="username") String username, HttpServletResponse response) {
@@ -47,6 +49,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     @ApiOperation(value = "", nickname = "createUser")
     public UserDtoOutput post(@RequestBody UserDtoCreate userDtoCreate, HttpServletResponse httpResponse) {
@@ -60,7 +63,7 @@ public class UserController {
         }
     }
 
-
+    @CrossOrigin(origins = "http://localhost:8080")
     @PatchMapping("@{username}")
     @ApiOperation(value = "", nickname = "updateUser")
     public UserDtoOutput patch(@PathVariable String username, @RequestBody UserDtoCreate userDto, HttpServletResponse httpResponse) {
@@ -74,7 +77,7 @@ public class UserController {
         }
     }
 
-    // really a patch tho
+    @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("@{username}")
     @ApiOperation(value = "", nickname = "deactivateUser")
     public UserDtoOutput delete(@PathVariable String username, HttpServletResponse httpResponse) {
@@ -88,6 +91,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/follow", method = RequestMethod.PATCH)
     public void followUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
         if (userService.followUser(username, creds)) {
@@ -97,6 +101,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/unfollow", method = RequestMethod.PATCH)
     public void unfollowUser(@PathVariable String username, @RequestBody Credentials creds, HttpServletResponse response) {
         if (userService.unfollowUser(username, creds)) {
@@ -107,6 +112,7 @@ public class UserController {
     }
 
     //returns list of tweets of followed users in reverse chronological order (newest first)
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/feed", method = RequestMethod.PATCH)
     public List<TweetDtoOutput> feedOfTweets(@PathVariable String username, HttpServletResponse response) {
         List<TweetDtoOutput> output = userService.getFeed(username);
@@ -119,6 +125,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/tweets", method = RequestMethod.GET)
     public List<TweetDtoOutput> usersTweets(@PathVariable String username, HttpServletResponse response) {
         List<TweetDtoOutput> output = userService.getUsersTweets(username);
@@ -131,6 +138,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/mentions", method = RequestMethod.GET)
     public List<TweetDtoOutput> getMentionedInTweets(@PathVariable String username, HttpServletResponse response) {
         List<TweetDtoOutput> output = userService.getMentionedInTweets(username);
@@ -143,6 +151,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/followers", method = RequestMethod.GET)
     public List<UserDtoOutput> getUsersFollowers(@PathVariable String username, HttpServletResponse response) {
         List<UserDtoOutput> output = userService.getUsersFollowers(username);
@@ -155,6 +164,7 @@ public class UserController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "@{username}/following", method = RequestMethod.GET)
     public List<UserDtoOutput> getUsersLeaders(@PathVariable String username, HttpServletResponse response) {
         List<UserDtoOutput> output = userService.getUsersLeaders(username);
