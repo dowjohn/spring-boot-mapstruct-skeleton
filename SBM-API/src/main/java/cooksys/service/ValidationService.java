@@ -1,5 +1,8 @@
 package cooksys.service;
 
+import cooksys.dto.CredentialsDto;
+import cooksys.entity.Credentials;
+import cooksys.mapper.CredentialsMapper;
 import cooksys.repository.HashtagRepository;
 import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ public class ValidationService {
     @Autowired
     private HashtagRepository hashtagRepository;
 
+    @Autowired
+    private CredentialsMapper credentialsMapper;
+
     public boolean userAvailable(String substring) {
         return userRepository.findByCredentialsUsername(substring) != null;
     }
@@ -27,5 +33,10 @@ public class ValidationService {
 
     public boolean tagExists(String substring) {
         return hashtagRepository.findByLabel(substring) != null;
+    }
+
+    public boolean login(CredentialsDto creds) {
+        Credentials credentials = credentialsMapper.toCredentials(creds);
+        return userRepository.findByCredentialsUsernameAndCredentialsPassword(credentials.getUsername(), credentials.getPassword()) != null;
     }
 }

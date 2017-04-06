@@ -1,6 +1,7 @@
 package cooksys.controller;
 
 
+import cooksys.dto.CredentialsDto;
 import cooksys.service.ValidationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,5 +39,13 @@ public class ValidationController {
     @ApiOperation(value = "", nickname = "checkIfTagExists")
     public boolean doesTagExist(@PathVariable String label) {
         return validationService.tagExists(label.substring(1));
+    }
+
+    @CrossOrigin(origins = "http://localhost:8080")
+    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    @ApiOperation(value = "", nickname = "login")
+    public boolean login(@RequestBody CredentialsDto creds, HttpServletResponse httpResponse) {
+        httpResponse.setStatus(HttpServletResponse.SC_OK);
+        return validationService.login(creds);
     }
 }
