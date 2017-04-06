@@ -113,11 +113,11 @@ public class UserController {
 
     //returns list of tweets of followed users in reverse chronological order (newest first)
     @CrossOrigin(origins = "http://localhost:8080")
-    @RequestMapping(value = "@{username}/feed", method = RequestMethod.PATCH)
+    @RequestMapping(value = "@{username}/feed", method = RequestMethod.GET)
     public List<TweetDtoOutput> feedOfTweets(@PathVariable String username, HttpServletResponse response) {
         List<TweetDtoOutput> output = userService.getFeed(username);
         if (output != null && !output.isEmpty()) {
-            response.setStatus(HttpServletResponse.SC_FOUND);
+            response.setStatus(HttpServletResponse.SC_OK);
             return output;
         } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);

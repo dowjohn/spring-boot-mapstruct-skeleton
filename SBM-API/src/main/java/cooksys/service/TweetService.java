@@ -13,7 +13,6 @@ import cooksys.repository.TweetRepository;
 import cooksys.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.plugin.javascript.navig.Array;
 
 import java.util.*;
 import java.util.stream.Collectors;
