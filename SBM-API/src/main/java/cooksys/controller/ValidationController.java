@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Validated
 @RequestMapping("validate")
@@ -20,28 +21,24 @@ public class ValidationController {
     @Autowired
     private ValidationService validationService;
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(method = RequestMethod.GET, value = "/username/available/@{name}")
     @ApiOperation(value = "", nickname = "checkIfUsernameAvailable")
     public boolean userAvailable(@PathVariable String name, HttpServletResponse httpResponse) {
         return validationService.userAvailable(name);
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(method = RequestMethod.GET, value = "/username/exists/@{name}")
     @ApiOperation(value = "", nickname = "checkIfUserExists")
     public boolean userExists(@PathVariable String name) {
         return validationService.userExists(name);
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(method = RequestMethod.GET, value = "/tag/exists/{label}")
     @ApiOperation(value = "", nickname = "checkIfTagExists")
     public boolean doesTagExist(@PathVariable String label) {
-        return validationService.tagExists(label.substring(1));
+        return validationService.tagExists(label);
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(method = RequestMethod.POST, value = "/login")
     @ApiOperation(value = "", nickname = "login")
     public boolean login(@RequestBody CredentialsDto creds, HttpServletResponse httpResponse) {

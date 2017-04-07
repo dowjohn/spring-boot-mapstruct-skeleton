@@ -12,7 +12,7 @@ import org.mapstruct.Mappings;
 public interface TweetMapper {
     @Mappings({
             @Mapping(source = "id",target="id"),
-            @Mapping(source = "author.id", target = "author"),
+            @Mapping(source = "author.credentials.username", target = "author"),
             @Mapping(source = "posted", target = "posted"),
             @Mapping(source = "content", target = "content"),
             @Mapping(source = "originalTweetReply.id", target = "replyTo"),

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("tags")
 @Api(tags = {"public", "hashtags"})
@@ -19,17 +20,15 @@ public class HashtagController {
     @Autowired
     private HashtagService hashtagService;
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllTags")
     public List<HashtagDtoOutput> getAll() {
         return hashtagService.getAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "/{label}", method = RequestMethod.GET)
     public List<TweetDtoOutput> getTweets(@PathVariable String label, HttpServletResponse response) {
-        List<TweetDtoOutput> output = hashtagService.getTweetsByHashtag(label.replace("@", ""));
+        List<TweetDtoOutput> output = hashtagService.getTweetsByHashtag(label);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_FOUND);
             return output;

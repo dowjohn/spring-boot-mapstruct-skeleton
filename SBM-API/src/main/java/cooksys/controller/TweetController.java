@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("tweets")
 @Api(tags = {"public", "tweets"})
@@ -19,14 +20,12 @@ public class TweetController {
     @Autowired
     private TweetService tweetService;
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @GetMapping
     @ApiOperation(value = "", nickname = "getAllTweets")
     public List<TweetDtoOutput> getAll() {
         return tweetService.getAll();
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public TweetDtoOutput getTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
         TweetDtoOutput output = tweetService.getTweet(id);
@@ -39,7 +38,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @PostMapping
     @ApiOperation(value = "", nickname = "createSimpleTweet")
     public TweetDtoOutput post(@RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
@@ -53,7 +51,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @DeleteMapping("{id}")
     @ApiOperation(value = "", nickname = "deactivateTweet")
     public TweetDtoOutput delete(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
@@ -65,10 +62,8 @@ public class TweetController {
             httpResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/like", method = RequestMethod.PATCH)
     public boolean likeTweet(@PathVariable Long id, @RequestBody Credentials credentials, HttpServletResponse httpResponse) {
         boolean good = tweetService.likeTweet(id, credentials);
@@ -81,7 +76,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
     public TweetDtoOutput replyToTweet(@PathVariable Long id, @RequestBody TweetDtoSimpleInput tweetDtoSimpleInput, HttpServletResponse httpResponse) {
         TweetDtoOutput output = tweetService.replyToTweet(id, tweetDtoSimpleInput);
@@ -94,7 +88,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/repost", method = RequestMethod.POST)
     public TweetDtoOutput repostTweet(@PathVariable Long id, @RequestBody TweetDtoRepost tweetDtoRepost, HttpServletResponse httpResponse) {
         TweetDtoOutput output =  tweetService.repostTweet(id, tweetDtoRepost);
@@ -107,7 +100,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/tags", method = RequestMethod.GET)
     public List<HashtagDtoOutput> getTags(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<HashtagDtoOutput> output = tweetService.getTags(id);
@@ -120,7 +112,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/likes", method = RequestMethod.GET)
     public List<UserDtoOutput> getLikes(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<UserDtoOutput> output =  tweetService.getLikes(id);
@@ -133,7 +124,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/replies", method = RequestMethod.GET)
     public List<TweetDtoOutput> getReplyTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<TweetDtoOutput> output = tweetService.getReplyTweets(id);
@@ -146,7 +136,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/reposts", method = RequestMethod.GET)
     public List<TweetDtoOutput> getRepostsOfTweet(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<TweetDtoOutput> output = tweetService.getRepostsOfTweet(id);
@@ -159,7 +148,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/mentions", method = RequestMethod.GET)
     public List<UserDtoOutput> getMentionedUsers(@PathVariable Long id, HttpServletResponse httpResponse) {
         List<UserDtoOutput> output = tweetService.getMentionedUsers(id);
@@ -172,7 +160,6 @@ public class TweetController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:8080")
     @RequestMapping(value = "{id}/context", method = RequestMethod.GET)
     public List<TweetDtoOutput> getContextTweets(@PathVariable Long id, HttpServletResponse httpResponse) {
         return tweetService.getContextTweets(id);
