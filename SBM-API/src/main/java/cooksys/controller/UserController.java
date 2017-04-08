@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping("@{username}")
     @ApiOperation(value = "", nickname = "getUserByName")
-    public UserDtoOutput getUserByName(@RequestParam(value="username") String username, HttpServletResponse response) {
+    public UserDtoOutput getUserByName(@PathVariable String username, HttpServletResponse response) {
         UserDtoOutput output = userService.getUserByName(username);
         if (output != null) {
             response.setStatus(HttpServletResponse.SC_OK);
